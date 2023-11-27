@@ -1,0 +1,18 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css");
+
+body{
+    height: 99.7134670487106vh;
+    background-image: url('/assets/c0b90fc618eda2f6a33782c157d992ea.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.center-div{
+    padding-top: 10%;
+}
+.gradient-icon {
+    background: linear-gradient(45deg,green 25%,yellow 45%,red 75%,blue 5%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}

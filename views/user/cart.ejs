@@ -1,0 +1,187 @@
+<style>
+    /* Increase the size of the increment and decrement buttons */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        height: 50px;
+        /* Adjust the height as needed */
+        width: 60px;
+        /* Adjust the width as needed */
+    }
+
+    /* For Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<%- include('../Layout/UserHeader.ejs') %>
+
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html" rel="nofollow">Home</a>
+                <span></span> Shop
+                <span></span> Your Cart
+            </div>
+        </div>
+    </div>
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center clean">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                              <% if (cart.length>0) {
+                                cart.forEach((cartData,index)=>{
+                                    %>
+                                    <p></p>
+                                    <tr>
+                                    <td class="image product-thumbnail"><img src="/assets/imgs/productIMG/<%=cartData.product.image[0]%>" alt="#"></td>
+                                    <td class="product-des product-name">
+                                        <%=cartData.product.name%>
+                                    </td>
+                                    <td class="price" data-title="Price"><span><%=cartData.product.price%> </span></td>
+                                    <td class="text-center" data-title="Stock">
+                                        <div class="cart-product-quantity">
+                                        
+                                            <input type="number" class="form-control" name="qty" value="<%= cartData.quantity %>" min="1" max="10" step="1" data-decimals="0" required onchange="updateCart('<%= cartData.product._id %>', this.value)">
+                                        </div>
+                                    </td>
+                                    <td class="text-right" data-title="Cart">
+                                        <span><%=productTotal[index] %></span>
+                                    </td>
+                                    <td>
+    <button type="button" onclick="confirmRemoveCartItem('<%= cartData.product._id %>');">
+        <i class="fi-rs-trash"></i>
+    </button>
+</td>                                </tr>
+                                    <%
+                                })
+
+
+                              } %>
+
+                                
+                        
+                            
+                                <tr>
+                                    <td colspan="6" class="text-end">
+                                        <a href="#" class="text-muted"> <i class="fi-rs-cross-small"></i> Clear Cart</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cart-action text-end">
+                
+                        <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                    </div>
+                    <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
+                    <div class="row mb-50">
+                        <div class="col-lg-6 col-md-12">
+                       
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="border p-md-4 p-30 border-radius cart-totals">
+                                <div class="heading_s1 mb-3">
+                                    <h4>Cart Totals</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="cart_total_label">Cart Subtotal</td>
+                                                <td class="cart_total_amount"><span class="font-lg fw-900 text-brand"><%=subtotalWithShipping %></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="cart_total_label">Shipping</td>
+                                                <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="cart_total_label">Total</td>
+                                                <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand"><%=subtotalWithShipping %></span></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function confirmRemoveCartItem(productId) {
+        console.log("kkkkkkkkkkkkkkkkk");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User clicked "Yes," so proceed with removing the item
+                removeCartItem(productId);
+            }
+        });
+    }
+    function removeCartItem(productId) {
+    fetch(`/removeCartItem?productId=${productId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('productRemoved', 'true');
+            location.reload();
+            
+        } else {
+            console.error('Failed to remove cart item:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing cart item:', error);
+    });
+}
+
+    function updateCart(productId, newQuantity) {
+        fetch(`/updateCart?productId=${productId}&quantity=${newQuantity}`, {
+            method: 'PUT',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+
+            } else {
+                console.error('Failed to update cart:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating cart:', error);
+        });
+    }
+
+    
+    </script>
+<%- include('../Layout/UserFooter.ejs') %>

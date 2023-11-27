@@ -1,0 +1,247 @@
+<%- include('../Layout/adminHeader.ejs') %>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Products List</h2>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                
+                </div>
+                <div>
+                    <a href="#" class="btn btn-light rounded font-md">Export</a>
+                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                    <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row align-items-center" >
+         
+                <form action="" method="get">
+
+                    <div style="display: flex;  align-items: center;">
+                      <input type="text" id="searchInput" class="form-control" placeholder="Search for products...">
+
+                
+                      <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+
+                        <label for="status" class="form-control">Select Status:</label>
+                        <select name="status" class="form-select" id="status">
+                            <option value="" selected>All</option>
+                            <option value="listed">Listed</option>
+                            <option value="unlisted">Unlisted</option>
+                        </select>
+                      </div>
+     
+                        <input type="submit" class="btn btn-sm font-sm rounded btn-brand" value="Filter">
+
+                  </div>
+                </form>
+           
+
+
+
+                  </div>
+                </header>
+            
+        <div class="card-body">
+                   
+        <table id="products" class="table">
+            <thead>
+              <tr>
+                <!-- <th scope="col"></th> -->
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone Number</th>
+           
+              </tr>
+            </thead>
+            <tbody>
+              <%
+                if (users.length > 0) {
+                  
+    
+                  users.forEach(user => {
+            %>
+            <tr>
+             
+              <td>
+                <div class="d-flex align-items-center">
+                       
+                              <div class="ms-3">
+                                <p class="fw-bold mb-1"><%= user.name %></p>
+                            
+                              </div>
+                            </div>
+               
+              </td>
+        <td>
+          <span><%= user.email %></span>
+              
+              </td>
+              <td>
+                <span><%= user.mobile %></span>
+              </td>
+
+         
+         
+
+              <td>
+               
+                <% if (user.is_blocked ==1) { %>
+                  <a  onclick="ProductUnlist('<%= user._id %>'),`<%=  user.is_blocked==0 ? 'unlist' : 'list' %>`" class="btn btn-sm font-sm rounded btn-brand">
+                    <i class="material-icons md-edit"></i> List
+                  </a>
+                <% } else { %>
+                  <a  onclick="ProductUnlist('<%= user._id %>',`<%=  user.is_blocked==0 ? 'unlist' : 'list' %>`)" class="btn btn-sm font-sm rounded btn-danger">
+                    <i class="material-icons md-edit"></i> Unlist
+                  </a>
+                <% } %>
+              </td>
+            </tr>
+            <%
+              });
+                } else {
+                  %>
+                  <tr>
+                    <td colspan="6">
+                      <p>User not found</p>
+                    </td>
+                  </tr>
+                  <%
+                }
+              %>
+            </tbody>
+          </table>
+          
+                </div> 
+            </div> 
+      
+        </section>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const table = document.getElementById("products");
+    const rows = table.getElementsByTagName("tr");
+
+    searchInput.addEventListener("keyup", function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        for (let i = 1; i < rows.length; i++) {
+            const rowData = rows[i].textContent.toLowerCase();
+            if (rowData.includes(searchText)) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    });
+});
+
+
+      
+function ProductUnlist(productId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Please confirm to block this product!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform the deletion via AJAX/fetch to the server
+          fetch(`/admin/unlistUser?id=${productId}`, {
+            method: 'GET',
+            // Add other necessary headers or configurations
+          }).then(response => {
+            if (response.ok) {
+              // Product successfully deleted
+              Swal.fire({
+                title: "success",
+                text: "Please confirm to unblock this product!",
+                icon: "success",
+                timer: 2000,
+                timeProgressBar: true,
+                showConfirmButton: false,
+
+
+              })
+                .then(() => {
+                  // Redirect after displaying the success message
+                  window.location.href = '/admin/userData'; // Redirect to a suitable page
+                });
+            } else {
+              Swal.fire("Error!", "Failed to delete product", "error");
+            }
+          }).catch(error => {
+            Swal.fire("Error!", "Failed to delete product", "error");
+          });
+        }
+      });
+    }
+
+
+   
+</script>
+
+        <%- include('../Layout/adminFooter.ejs') %>
+
+        function Unlistandlist(userId, action) {
+                let titleText, confirmText, successText, url;
+                
+                if (action === 'list') {
+                    titleText = "Are you sure?";
+                    confirmText = "Please confirm to unblock this user!";
+                    successText = "User has been unblocked";
+                    buttonText = "Yes!"
+                } else if (action === 'unlist') {
+                    titleText = "Are you sure?";
+                    confirmText = "Please confirm to block this user!";
+                    successText = "User has been blocked";
+                    buttonText = "Yes!"
+                }
+
+                Swal.fire({
+                    title: titleText,
+                    text: confirmText,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: buttonText,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Perform the listing or unlisting via AJAX/fetch to the server
+                        fetch(`/admin/unlistUser?id=${productId}`, {
+                            method: 'GET',
+                            // Add other necessary headers or configurations
+                        }).then(response => {
+                            if (response.ok) {
+                                // Success message
+                                Swal.fire({
+                                    title: "Success",
+                                    text: successText,
+                                    icon: "success",
+                                    timer: 2000,
+                                    timeProgressBar: true,
+                                    showConfirmButton: false,
+                                }).then(() => {
+                                    // Redirect after displaying the success message
+                                    window.location.reload(); // Redirect to a suitable page
+                                });
+                            } else {
+                                Swal.fire("Error!", "Failed to perform the action", "error");
+                            }
+                        }).catch(error => {
+                            Swal.fire("Error!", "Failed to perform the action", "error");
+                        });
+                    }
+                });
+            }

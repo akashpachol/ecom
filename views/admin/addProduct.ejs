@@ -1,0 +1,366 @@
+<%- include('../Layout/adminHeader.ejs') %>
+<form action="/admin/addproduct" method="post" enctype="multipart/form-data" id="product-form" onsubmit="return validationChecking()">
+
+        <section class="content-main">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                        <div>
+                            <a href='/admin/prdoucts'> <button
+                                    class="btn btn-light rounded font-sm mr-5 text-body hover-up">cancel</button></a>
+                                    <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product title</label>
+                                <input type="text" placeholder="Type here" name="name" class="form-control"
+                                    id="product_title">
+                                    
+                                <div class="error-message" style="color: red;" id="product_title-error"></div>
+
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-6  mb-3">
+                                    <label for="product_sku" class="form-label">Brand</label>
+                               
+
+                                        <select   name="brand" class="form-control" id="product_brand">
+                                            <option value="" disabled selected>Select a brand
+                                            </option>
+                                            <% brands.forEach(brand=> { 
+                                                
+                                                if (brand.is_listed) {
+                                                    %>
+                                                  
+                                                  <option value="<%= brand._id %>">
+                                                      <%= brand.name %>
+                                                  </option>
+      
+                                                  <%
+                                                }
+                                             }); %>
+    
+                           
+    
+                                        </select>
+                                    
+                                    <div class="error-message" style="color: red;" id="product_brand-error"></div>
+
+                                </div>
+                                <div class="col-md-6  mb-3">
+                                    <label for="inputPassword4" class="form-label">category</label>
+                                    <select name="category" class="form-control" id="product_category">
+                                        <option value="" disabled selected>Select a Category
+                                        </option>
+                                        <% categories.forEach(category=> { 
+                                            
+                                            if (category.is_listed) {
+                                                %>
+                                              
+                                              <option value="<%= category._id %>">
+                                                  <%= category.name %>
+                                              </option>
+  
+                                              <%
+                                            }
+                                         }); %>
+
+
+                                      
+                                    </select>
+                                
+                                    <div class="error-message" style="color: red;" id="product_category-error"></div>
+                                </div>
+
+
+
+                            </div>
+
+
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row gx-3">
+                                <div class="col-md-4">
+                                    <label for="inputPrice" class="form-label">price</label>
+                                    <input type="text" class="form-control" name="price"
+                                        placeholder="enter the price" id="product_price">
+                                    <div class="error-message" style="color: red;" id="product_price-error"></div>
+                                </div>
+                                <div class="col-md-4">
+            <label for="discount_price">Discount Price:</label>
+            <input type="text" name="discount_price" placeholder="Type here" class="form-control" id="discount_price">
+            <div class="error-message" style="color: red;" id="discount_price-error"></div>
+            </div>
+
+    
+                                <div class="col-md-4 mb-3">
+                                    <label for="inputAddress2" class="form-label" id="gender">gender</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="" disabled selected>Select a Category
+                                        </option>
+                                        <% gender?.forEach(value=> { %>
+                                            <option value="<%= value %>">
+                                                <%= value %>
+                                            </option>
+                                            <% }); %>
+                                         
+                                    </select>
+                                    <div class="error-message" style="color: red;" id="gender-error"></div>
+                                </div>
+
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-12 card mb-4">
+                                    <div class="card-body">
+
+                                        <div class="size-container">
+                                            <!-- Add Product Images Here -->
+                                        </div>
+                                        <button type="button" class="btn btn-primary mt-3" onclick="addSize()">Add
+                                            size</button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="description" class="form-control"
+                                    rows="4" id="description"></textarea>
+                                <div class="error-message" style="color: red;" id="description-error"></div>
+
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+
+                </div>
+               
+
+                <div class="col-lg-3">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Picture</h4>
+                                </div>
+                                <div class="card-body">
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            
+                                            <div class="images-container">
+                                                <div class="image-preview-container d-flex flex-wrap justify-content-center">
+                                                    <!-- Placeholder for default image -->
+                                                    <div class="image-container border-1">
+                                                        <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploadimage.svg" alt="Default" class="image-preview">
+                                                    </div>
+                                                </div>
+                                                <input class="form-control" name="image"  multiple="multiple" type="file" onchange="displayImages(this)">
+                                                <div class="error-message" style="color: red;" id="product_image-error"></div>
+                                            </div>
+                                            
+                                            <script>
+                                                function displayImages(input) {
+                                                    const previewContainer = document.querySelector('.image-preview-container');
+                                                    previewContainer.innerHTML = ''; // Clear previous previews
+                                            
+                                                    if (input.files && input.files.length > 0) {
+                                                        for (let i = 0; i < input.files.length; i++) {
+                                                            const reader = new FileReader();
+                                                            reader.onload = function (e) {
+                                                                const imagePreview = document.createElement('div');
+                                                                imagePreview.classList.add('image-container');
+                                                                const img = document.createElement('img');
+                                                                img.src = e.target.result;
+                                                                img.style.width = '100px';
+                                                                img.style.height = '100px';
+                                                                img.style.marginBottom = '20px';
+                                                                img.style.marginRight = '5px'; 
+                                                                img.style.marginLeft = '5px'; 
+                                                                img.classList.add('image-preview');
+                                                                imagePreview.appendChild(img);
+                                                                previewContainer.appendChild(imagePreview);
+                                                            };
+                                                            reader.readAsDataURL(input.files[i]);
+                                                        }
+                                                    } else {
+                                                        const defaultImagePreview = document.createElement('div');
+                                                        defaultImagePreview.classList.add('image-container');
+                                                        const defaultImg = document.createElement('img');
+                                                        defaultImg.src = '/uploadimage.svg';
+                                                        defaultImg.style.width = '100px';
+                                                        defaultImg.style.height = '100px';
+                                                        defaultImg.style.marginBottom = '20px';
+                                                        defaultImg.style.marginRight = '5px'; 
+                                                        defaultImg.style.marginLeft = '5px'; 
+                                                        defaultImg.classList.add('image-preview');
+                                                        defaultImagePreview.appendChild(defaultImg);
+                                                        previewContainer.appendChild(defaultImagePreview);
+                                                    }
+                                                    
+                                                }
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                      
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div id="invalid">
+                    <% if (typeof message !=='undefined' && message) { %>
+                        <p style="color: rgb(8, 96, 0);" id="message">
+                            <%= message %>
+                        </p>
+                        <% } %>
+                                      
+                </div>
+            </div> <!-- card end// -->
+            </div>
+
+            </div>
+        </section>
+    </form>
+
+
+
+    <script>
+        let sizeCount = 0;
+
+        
+        function addSize() {
+    sizeCount++;
+    const container = document.querySelector('.size-container');
+    const sizeDiv = document.createElement('div');
+    sizeDiv.classList.add('row', 'my-1');
+
+    sizeDiv.innerHTML = `
+        <div class="col-4">
+            <label for="size[${sizeCount}]">Size :</label>
+            <input type="text" name="sizes[${sizeCount}][size]" placeholder="Type here" class="form-control" id="size${sizeCount}">
+            <div class="error-message" style="color: red;" id="size${sizeCount}-error"></div>
+        </div>
+        <div class="col-4">
+            <label for="stock${sizeCount}">Stock:</label>
+            <input type="text" name="sizes[${sizeCount}][stock]" placeholder="Type here" class="form-control" id="stock${sizeCount}">
+            <div class="error-message" style="color: red;" id="stock${sizeCount}-error"></div>
+        </div>
+        <div class="col-4 mt-4">
+                <button type="button" class="btn btn-danger " onclick="removeSize(this)">Remove</button>
+            </div>
+     
+    `;
+
+    container.appendChild(sizeDiv);
+}
+
+        function displayImage(imageNumber, input) {
+            const preview = document.getElementById(`image-preview${imageNumber}`);
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+            }
+        }
+
+        function removeSize(button) {
+        const container = document.querySelector('.size-container');
+        const sizeDiv = button.parentElement.parentElement; // Get the parent div containing the size and stock fields.
+        container.removeChild(sizeDiv); // Remove the parent div from the container.
+    }
+  
+ 
+    function validationChecking() {
+        const product_title = document.getElementById("product_title").value;
+        const description = document.getElementById("description").value;
+        const product_price = document.getElementById("product_price").value;
+        const discount_price = document.getElementById("discount_price").value;
+        const product_category = document.querySelector('select[name="category"]').value.trim();
+    const product_brand = document.querySelector('select[name="brand"]').value.trim();
+    const product_gender = document.querySelector('select[name="gender"]').value.trim();
+
+
+   
+    for (let i = 1; i <= sizeCount; i++) {
+    const sizeInput = document.getElementById(`size${i}`).value;
+    const stockInput = document.getElementById(`stock${i}`).value;
+
+
+    const sizeError = document.getElementById(`size${i}-error`);
+    const stockError = document.getElementById(`stock${i}-error`);
+ 
+
+    // Check if any of the fields are empty or invalid
+    sizeError.innerHTML = sizeInput.trim() === "" || isNaN(sizeInput) || parseFloat(sizeInput) < 0
+        ? "Please enter a valid size"
+        : "";
+
+    stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFloat(stockInput) < 0
+        ? "Please enter valid stock"
+        : "";
+
+}
+
+        
+     
+
+
+        const product_title_error = document.getElementById("product_title-error");
+        const description_error = document.getElementById("description-error");
+        const product_price_error= document.getElementById("product_price-error");
+        const product_category_error = document.getElementById("product_category-error");
+        const product_brand_error = document.getElementById("product_brand-error");
+        const gender_error = document.getElementById("gender-error");
+        const discount_price_error = document.getElementById("discount_price-error");
+
+        product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
+        description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
+        product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
+        product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
+        product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
+        gender_error.innerHTML = product_gender.trim() === "" ? "Please enter gender" : "";
+        discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
+
+
+       
+       
+        return !(product_title.trim() === "" || description.trim() === "" || product_price.trim() === ""||product_category.trim() === ""||product_brand.trim() === ""||product_gender.trim() === "");
+    }
+
+    
+
+        
+
+
+ 
+    </script>
+
+    
+
+
+    <%- include('../Layout/adminFooter.ejs') %>

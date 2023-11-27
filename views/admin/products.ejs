@@ -1,0 +1,249 @@
+<%- include('../Layout/adminHeader.ejs') %>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Products List</h2>
+        <p>Lorem ipsum dolor sit amet.</p>
+
+      </div>
+      <div>
+        <a href="#" class="btn btn-light rounded font-md">Export</a>
+        <a href="#" class="btn btn-light rounded  font-md">Import</a>
+        <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <header class="card-header">
+        <div class="row align-items-center">
+
+          <form action="" method="get">
+
+            <div style="display: flex;  align-items: center;">
+              <input type="text" id="searchInput" class="form-control" placeholder="Search for products...">
+
+              <div class="col-md-4 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+                <label for="category" class="form-control">Select Category:</label>
+                <select class="form-select" name="category" id="category">
+                  <option value="" selected>All</option>
+                  <% categories.forEach(category=> { %>
+                    <option value="<%= category.name %>">
+                      <%= category.name %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+              <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+
+                <label for="status" class="form-control">Select Status:</label>
+                <select name="status" class="form-select" id="status">
+                  <option value="" selected>All</option>
+                  <option value="listed">Listed</option>
+                  <option value="unlisted">Unlisted</option>
+                </select>
+              </div>
+
+              <input type="submit" class="btn btn-sm font-sm rounded btn-brand" value="Filter">
+
+            </div>
+          </form>
+
+
+
+
+        </div>
+      </header>
+
+      <div class="card-body">
+
+        <table id="products" class="table">
+          <thead>
+            <tr>
+              <!-- <th scope="col"></th> -->
+              <th scope="col">Name</th>
+              <th scope="col">Category</th>
+              <th scope="col">Brand</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Status</th>
+              <th scope="col">Upload Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (products.length> 0 ) {
+
+
+              products.forEach(product => {
+
+              if (product.is_listed ) {
+              %>
+
+              <tr>
+
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img src='/assets/imgs/productIMG/<%= product.image[0]%>' alt="<%= product.image[0]%>"
+                      style="width: 45px; height: 45px" class="rounded-circle" />
+                    <div class="ms-3">
+                      <p class="fw-bold mb-1">
+                        <%= product.name %>
+                      </p>
+
+                    </div>
+                  </div>
+
+                </td>
+                <td>
+                  <% const categoryId=product.category %>
+
+                    <% categories.forEach(category=> { %>
+                      <% if (categoryId.toString()===category._id.toString()) { %>
+                        <span>
+                          <%= category.name %>
+                        </span>
+                        <% } %>
+                          <% }); %>
+                </td>
+                <td>
+                  <% const brandId=product.brand %>
+
+                    <% brands.forEach(brand=> { %>
+                      <% if (brandId.toString()===brand._id.toString()) { %>
+                        <span>
+                          <%= brand.name %>
+                        </span>
+                        <% } %>
+                          <% }); %>
+                </td>
+                <td>
+                  <div class="info align-items-center">
+                    <span>
+                      <%= product.price %>
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <% const productStock=product.sizes.map(value=> value.stock).reduce((accumulator, currentValue) =>
+                    accumulator + currentValue, 0); %>
+                    <p class="fw-bold mb-1">
+                      <%= productStock %>
+                    </p>
+                </td>
+
+                <td>
+
+                  <% if(productStock>20){
+                    %>
+
+                    <span class="badge rounded-pill alert-success">Published</span>
+                    <% }else if(productStock==0){ %>
+                      <span class=" badge rounded-pill text-bg-danger ">
+                        out of stock
+                      </span>
+
+                      <% } else if(productStock<20){ %>
+
+                        <span class="badge rounded-pill alert-warning"> low stock</span>
+                        <% } %>
+
+                </td>
+                <td>
+                  <%= new Date(product.productAddDate).toLocaleDateString() %>
+                </td>
+
+                <td>
+
+                  <a onclick="ProductUnlist('<%= product._id %>')" class="btn text-danger  font-sm rounded btn-light">
+                    <i class="material-icons md-edit"></i> delete
+                  </a>
+                  <a href="/admin/editProduct/?id=<%= product._id%>" class="btn text-warning font-sm rounded btn-light">
+                    <i class="material-icons md-edit"></i> Edit
+                  </a>
+                </td>
+              </tr>
+              <% } }); } else { %>
+                <tr>
+                  <td colspan="6">
+                    <p>User not found</p>
+                  </td>
+                </tr>
+                <% } %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </section>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const searchInput = document.getElementById("searchInput");
+      const table = document.getElementById("products");
+      const rows = table.getElementsByTagName("tr");
+
+      searchInput.addEventListener("keyup", function () {
+        const searchText = searchInput.value.toLowerCase();
+
+        for (let i = 1; i < rows.length; i++) {
+          const rowData = rows[i].textContent.toLowerCase();
+          if (rowData.includes(searchText)) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      });
+    });
+
+
+    function ProductUnlist(productId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Please confirm to delete this product!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform the deletion via AJAX/fetch to the server
+          fetch(`/admin/deleteProduct/${productId}`, {
+            method: 'GET',
+            // Add other necessary headers or configurations
+          }).then(response => {
+            if (response.ok) {
+              // Product successfully deleted
+              Swal.fire({
+                title: "success",
+                text: "Please confirm to delete this product!",
+                icon: "success",
+                timer: 2000,
+                timeProgressBar: true,
+                showConfirmButton: false,
+
+
+              })
+                .then(() => {
+                  // Redirect after displaying the success message
+                  window.location.href = '/admin/products'; // Redirect to a suitable page
+                });
+            } else {
+              Swal.fire("Error!", "Failed to delete product", "error");
+            }
+          }).catch(error => {
+            Swal.fire("Error!", "Failed to delete product", "error");
+          });
+        }
+      });
+    }
+
+  </script>
+
+  <%- include('../Layout/adminFooter.ejs') %>

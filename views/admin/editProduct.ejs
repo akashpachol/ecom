@@ -1,0 +1,382 @@
+<%- include('../Layout/adminHeader.ejs') %>
+    <form action="" method="post" enctype="multipart/form-data" id="product-form"
+    onsubmit="return validationChecking()">
+
+        <section class="content-main">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                        <div>
+                            <a href='/admin/prdouctList'> <button
+                                    class="btn btn-light rounded font-sm mr-5 text-body hover-up">cancel</button></a>
+                            <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload"
+                              >
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <input type="hidden" name="product_id" value="<%= product._id %>" >
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product title</label>
+                                <input type="text" placeholder="Type here"  value="<%= product.name %>" name="name" class="form-control"
+                                    id="product_title">
+                                <div class="error-message" style="color: red;" id="product_title-error"></div>
+
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-6  mb-3">
+                                    <label for="product_sku" class="form-label">Brand</label>
+                               
+
+                                    <select   name="brand"  value="<%= product.brand %>"  class="form-control" id="product_brand">
+                                        <option value="" disabled selected>Select a Category
+                                        </option>
+                                        <% brands.forEach(brand=> { 
+                                            
+                                            if (brand.is_listed) {
+                                                %>
+                                              
+                                              <option value="<%= brand._id %>"<% if (brand._id.toString() === product.brand.toString()) { %>disabled selected <% } %>>
+                                                  <%= brand.name %>
+                                              </option>
+  
+                                              <%
+                                            }
+                                         }); %>
+
+                       
+
+                                    </select>
+                                
+                                <div class="error-message" style="color: red;" id="product_brand-error"></div>
+
+                                </div>
+                                <div class="col-md-6  mb-3">
+                                    <label for="inputPassword4" class="form-label">category</label>
+                                    <select name="category" class="form-control">
+                                        // <option value="">Select a Category
+                                        // </option>
+                                        <% categories?.forEach(category=> { %>
+                                            <option value="<%= category._id %>"  <% if (category._id.toString() === product.category.toString()) { %>disabled selected <% } %> >
+                                                <%= category.name %>
+                                            </option>
+                                        
+                                            <% }); %>
+
+
+
+                                    </select>
+                                    <div class="error-message" style="color: red;" id="product_brand-error"></div>
+
+                                </div>
+
+
+
+                            </div>
+
+
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row gx-3">
+                                <div class="col-md-4">
+                                    <label for="inputPrice" class="form-label">price</label>
+                                    <input type="text" class="form-control"  value="<%= product.price %>" name="price" id="inputprice"
+                                        placeholder="enter the price">
+                                    <div class="error-message" style="color: red;" id="product_price-error"></div>
+                                </div>
+
+
+
+                                <div class="col-md-4  mb-3">
+
+                                    <label class="form-label">Discount Price</label>
+
+                                    <input type="number" name="discoutPrice"  value="<%= product.discount_price %>" placeholder="Type here"
+                                        class="form-control" id="product_discount">
+                                    <div class="error-message" style="color: red;" id="product_discount-error"></div>
+
+
+
+                                </div>
+
+                          
+                                <div class="col-md-4 mb-3">
+                                    <label for="inputAddress2" class="form-label">gender</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="" disabled selected>Select a Category
+                                        </option>
+                                        <% gender?.forEach(value=> { %>
+                                            <option value="<%= value %>">
+                                                <%= value %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-12 card mb-4">
+                                    <div class="card-body">
+
+                                        <div class="size-container">
+                                            <% product.sizes.forEach((size, index) => { %>
+                                                <div class="row my-1">
+                                                    <div class="col-5">
+                                                        <label for="size[<%= index %>][size]">Size :</label>
+                                                        <input type="text" name="sizes[<%= index %>][size]" value="<%= size.size %>" class="form-control" id="size<%= index %>-size">
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <label for="size[<%= index %>][stock]">Stock:</label>
+                                                        <input type="text" name="sizes[<%= index %>][stock]" value="<%= size.stock %>" class="form-control" id="size<%= index %>-stock">
+                                                    </div>
+                                                    <div class="col-2 mt-4">
+                                                        <button type="button" class="btn btn-danger" onclick="removeSize(this)">Remove</button>
+                                                    </div>
+                                                </div>
+                                            <% }); %>
+
+
+                                            
+                                            <!-- Add Product Images Here -->
+                                        </div>
+                                        <button type="button" class="btn btn-primary mt-3" onclick="addSize()">Add
+                                            size</button>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" name="description"   class="form-control"
+                                    rows="4"><%= product.description %></textarea>
+                                <div class="error-message" style="color: red;" id="description-error"></div>
+
+                            </div>
+                        </div>
+                    </div> 
+
+                </div>
+
+
+                <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Picture</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class=" row d-flex justify-content-around flex-row">
+                                        <div class="card col-lg-8 p-2">
+                                            <div class="images-container">
+                                                <div class="image-preview-container d-flex flex-wrap justify-content-around">
+
+                                                    <% if (product.image && product.image.length > 0) { %>
+                                                        <% for (let i = 0; i < product.image.length; i++) { %>
+                                                            <div class="image-container border-1 mb-4">
+                                                                <input type="checkbox" id="delete-checkbox<%= i %>" name="deletecheckbox" value="<%= i%>">
+                                                                <label for="delete-checkbox<%= i %>">Delete</label>
+                                                                <img class="image-preview"  src="/assets/imgs/productIMG/<%= product.image[i] %>" alt="Default">
+                                                            </div>
+                                                        <% } %>
+                                                    <% } else{ %>
+                                                        <div class="image-container border-1 mb-4">
+                                                            <img class="image-preview" style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploadimage.svg" alt="Default">
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                                <input class="form-control" name="image"  multiple="multiple" type="file" onchange="displayImages(this)">
+                                                <div class="error-message" style="color: red;" id="product_image-error"></div>
+                                            </div>                                
+                                        </div>
+                                        <script>
+                                            function displayImages(input) {
+                                                const previewContainer = document.querySelector('.image-preview-container');
+                                                previewContainer.innerHTML = ''; // Clear previous previews
+                                        
+                                                if (input.files && input.files.length > 0) {
+                                                    for (let i = 0; i < input.files.length; i++) {
+                                                        const reader = new FileReader();
+                                                        reader.onload = function (e) {
+                                                            const imagePreview = document.createElement('div');
+                                                            imagePreview.classList.add('image-container');
+                                                            const img = document.createElement('img');
+                                                            img.src = e.target.result;
+                                                            img.style.width = '100px';
+                                                            img.style.height = '100px';
+                                                         
+                                                            img.classList.add('image-preview');
+                                                            imagePreview.appendChild(img);
+                                                            previewContainer.appendChild(imagePreview);
+                                                        };
+                                                        reader.readAsDataURL(input.files[i]);
+                                                    }
+                                                } else {
+                                                    const defaultImagePreview = document.createElement('div');
+                                                    defaultImagePreview.classList.add('image-container');
+                                                    const defaultImg = document.createElement('img');
+                                                    defaultImg.src = '/uploadimage.svg';
+                                                    defaultImg.style.width = '100px';
+                                                    defaultImg.style.height = '100px';
+                                                  
+                                                    defaultImg.classList.add('image-preview');
+                                                    defaultImagePreview.appendChild(defaultImg);
+                                                    previewContainer.appendChild(defaultImagePreview);
+                                                }
+                                            }
+
+                                           
+                                        </script>
+                                    </div>
+                                </div>
+                            </div> 
+                          >
+                        </div>
+
+              
+
+
+
+
+                <div id="invalid">
+                    <% if (typeof message !=='undefined' && message) { %>
+                        <p style="color: rgb(8, 96, 0);" id="message">
+                            <%= message %>
+                        </p>
+                        <% } %>
+                                      
+                </div>
+            </div> <!-- card end// -->
+            </div>
+
+            </div>
+        </section>
+    </form>
+
+
+
+    <script>
+        let sizeCount = 0;
+
+        function addSize() {
+    sizeCount++;
+    const container = document.querySelector('.size-container');
+    const sizeDiv = document.createElement('div');
+    sizeDiv.classList.add('row', 'my-1');
+
+    sizeDiv.innerHTML = `
+        <div class="col-5">
+            <label for="size[${sizeCount}]">Size :</label>
+            <input type="text" name="sizes[${sizeCount}][size]" placeholder="Type here" class="form-control" id="size${sizeCount}">
+        </div>
+        <div class="col-5">
+            <label for="stock${sizeCount}">Stock:</label>
+            <input type="text" name="sizes[${sizeCount}][stock]" placeholder="Type here" class="form-control" id="stock${sizeCount}">
+        </div>
+        <div class="col-2 mt-4">
+                <button type="button" class="btn btn-danger " onclick="removeSize(this)">Remove</button>
+            </div>
+    `;
+
+    container.appendChild(sizeDiv);
+}
+
+
+        function displayImage(imageNumber, input) {
+            const preview = document.getElementById(`image-preview${imageNumber}`);
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+            }
+        }
+        
+    function removeSize(button) {
+        const container = document.querySelector('.size-container');
+        const sizeDiv = button.parentElement.parentElement; // Get the parent div containing the size and stock fields.
+        container.removeChild(sizeDiv); // Remove the parent div from the container.
+    }
+
+    function viewImage(event, imageIndex) {
+    const imgView = document.getElementById(`imgView${imageIndex}`);
+    imgView.src = URL.createObjectURL(event.target.files[0]);
+}
+
+
+
+
+
+
+
+ 
+function validationChecking() {
+        const product_title = document.getElementById("product_title").value;
+        const description = document.getElementById("description").value;
+        const product_price = document.getElementById("product_price").value;
+        const discount_price = document.getElementById("discount_price").value;
+        const product_category = document.querySelector('select[name="category"]').value.trim();
+    const product_brand = document.querySelector('select[name="brand"]').value.trim();
+    const product_gender = document.querySelector('select[name="gender"]').value.trim();
+
+
+   
+    for (let i = 1; i <= sizeCount; i++) {
+    const sizeInput = document.getElementById(`size${i}`).value;
+    const stockInput = document.getElementById(`stock${i}`).value;
+
+
+    const sizeError = document.getElementById(`size${i}-error`);
+    const stockError = document.getElementById(`stock${i}-error`);
+ 
+
+    // Check if any of the fields are empty or invalid
+    sizeError.innerHTML = sizeInput.trim() === "" || isNaN(sizeInput) || parseFloat(sizeInput) < 0
+        ? "Please enter a valid size"
+        : "";
+
+    stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFloat(stockInput) < 0
+        ? "Please enter valid stock"
+        : "";
+
+}
+        const product_title_error = document.getElementById("product_title-error");
+        const description_error = document.getElementById("description-error");
+        const product_price_error= document.getElementById("product_price-error");
+        const product_category_error = document.getElementById("product_category-error");
+        const product_brand_error = document.getElementById("product_brand-error");
+        const gender_error = document.getElementById("gender-error");
+        const discount_price_error = document.getElementById("discount_price-error");
+
+        product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
+        description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
+        product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
+        product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
+        product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
+        gender_error.innerHTML = product_gender.trim() === "" ? "Please enter gender" : "";
+        discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
+
+
+       
+       
+        return !(product_title.trim() === "" || description.trim() === "" || product_price.trim() === ""|| discount_price.trim() === "" || product_category.trim() === "" || product_brand.trim() === "" || product_gender.trim() === ""); 
+       }
+
+
+    </script>
+
+
+    <%- include('../Layout/adminFooter.ejs') %>
