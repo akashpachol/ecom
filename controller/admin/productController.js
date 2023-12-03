@@ -36,15 +36,12 @@ const addProduct = async (req, res) => {
     const imageFiles = req.files;
 
     for (const file of imageFiles) {
-      console.log(file, "File received");
 
       const randomInteger = Math.floor(Math.random() * 20000001);
       const imageDirectory = path.join('public', 'assets', 'imgs', 'productIMG');
       const imgFileName = "cropped" + randomInteger + ".jpg";
       const imagePath = path.join(imageDirectory, imgFileName);
 
-      console.log(imagePath, "Image path");
-console.log(file.path,"akash");
       const croppedImage = await sharp(file.path)
         .resize(580, 320, {
           fit: "cover",

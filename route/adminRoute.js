@@ -7,6 +7,12 @@ const productController=require('../controller/admin/productController')
 const brandController=require('../controller/admin/brandController')
 const orderController=require('../controller/admin/oderController')
 const adminAuth = require("../middleware/adminAuth");
+const bodyParser = require('body-parser');
+
+adminRoute.use(bodyParser.urlencoded({ extended: true }));
+
+adminRoute.use(bodyParser.json());
+
 // LOGIN
 adminRoute.get("/", adminAuth.isLogout, adminController.loadAdminLogin);
 adminRoute.get("/logout", adminController.adminLogout);
@@ -51,6 +57,6 @@ adminRoute.post("/editProduct",multer.uploadProduct.array('image'), productContr
 adminRoute.get("/alluserorders", adminAuth.isLogin, orderController.listUserOrders);
 adminRoute.get("/orderDetails", adminAuth.isLogin, orderController.listOrderDetails);
 adminRoute.get("/orderStatusChange", adminAuth.isLogin, orderController.orderStatusChange);
-
+adminRoute.get("/salesReport", adminAuth.isLogin, orderController.loadSalesReport);
 
 module.exports = adminRoute;

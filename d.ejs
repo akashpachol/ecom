@@ -1,0 +1,39 @@
+<% orders.forEach((order) => { %>
+    <tr>                    
+      <td><%= order._id %></td>
+      <td><%= order.user.name %></td>
+      <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+      <td> <%= new Date(order.deliveryDate).toLocaleDateString() %></td>
+      <td><%= order.totalAmount %></td>
+      <td>  <% if (order.status == 'Pending') { %>
+        <span class="badge badge-pill badge-soft-warning"><%= order.status %></span>
+    <% } else if (order.status == 'Order Confirmed') { %>
+        <span class="badge badge-pill badge-soft-warning"><%= order.status %></span>
+    <% } else if (order.status == 'Shipped') { %>
+        <span class="badge badge-pill badge-soft-dark"><%= order.status %></span>
+    <% } else if (order.status == 'Out For Delivery') { %>
+        <span class="badge badge-pill badge-soft-dark"><%= order.status %></span>
+    <% } else if (order.status == 'Delivered') { %>
+        <span class="badge badge-pill badge-soft-success"><%= order.status %></span>
+        <% } else if (order.status == 'Return Successfull') { %>
+            <span class="badge badge-pill badge-soft-success"><%= order.status %></span>
+    <% } else { %>
+        <span class="badge badge-pill badge-soft-danger"><%= order.status %></span>
+    <% } %>
+</td>
+<td>
+    <%  if (order.paymentStatus == 'Pending') { %>
+        <span class="badge badge-pill badge-soft-warning"><%= order.paymentStatus %></span>
+    <% } else if (order.paymentStatus == 'Payment Successful') { %>
+        <span class="badge badge-pill badge-soft-success"><%= order.paymentStatus %></span>
+    <% } else if (order.paymentStatus == 'Refund') { %>
+        <span class="badge badge-pill badge-soft-primary"><%= order.paymentStatus %></span>
+        <% } else  { %>
+            <span class="badge badge-pill badge-soft-danger"><%= order.paymentStatus %></span>
+        <% } %></td>
+
+      <td><%= order.paymentMethod %></td>
+
+      
+    </tr>
+    <% }); %>

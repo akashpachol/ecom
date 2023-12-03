@@ -1,5 +1,6 @@
 const Cart=require('../../model/cartModel')
 const User=require('../../model/userModel')
+const Product = require("../../model/productModel");
 const {calculateProductTotal,calculateSubtotal}=require('../../config/cartSum')
 const loadCartPage = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ const loadCartPage = async (req, res) => {
         
               const productTotal = calculateProductTotal(cart);
               const subtotalWithShipping = subtotal;
-              console.log(productTotal,"sub12");
+              
              
               let outOfStockError = false;
           
@@ -45,7 +46,7 @@ const loadCartPage = async (req, res) => {
                   }
                 }
               }
-              console.log(cart, "akash");
+          
               res.render("user/cart", { userData,
                 productTotal,
       subtotalWithShipping,
@@ -69,84 +70,114 @@ const loadCartPage = async (req, res) => {
 
 
 const addTocart = async (req, res) => {
-    try {
-      const userId = req.session.user_id;
-      const product_Id = req.body.productData_id;
+  try {
+    const userId = req.session.user_id;
+    const product_Id = req.body.productData_id;
 
-      const { qty } = req.body;
- 
-  
-      const existingCart = await Cart.findOne({ user: userId });
-   
-      let newCart = {};
-      if (existingCart) {
-        const existingCartItem = existingCart.items.find(
-          (item) => item.product.toString() === product_Id
-        );
-  
-        if (existingCartItem) {
-          existingCartItem.quantity += parseInt(qty);
-        } else {
-          existingCart.items.push({
-            product: product_Id,
-            quantity: parseInt(qty),
-          });
-        }
-  
-        existingCart.total = existingCart.items.reduce(
-          (total, item) => total + (item.quantity || 0),
-          0
-        );
-  
-        await existingCart.save();
-      }    else {
-    
-        newCart = new Cart({
-          user: userId,
-          items: [{ product: product_Id, quantity: parseInt(qty) }],
-          total: parseInt(qty, 10),
-        });
-   
-        await newCart.save();
-      }
-      res.redirect('/cart')
-      
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-    }
-  };
+    const { qty, size  } = req.body;
 
-  const updateCartCount = async (req, res) => {
-    try {
-      const userId = req.session.user_id;
-      const productId = req.query.productId;
-      const newQuantity = parseInt(req.query.quantity);
-  
-      const existingCart = await Cart.findOne({ user: userId });
-      if (existingCart) {
-        const existingCartItem = existingCart.items.find(
-          (item) => item.product.toString() === productId
-        );
-  
-        if (existingCartItem) {
-          existingCartItem.quantity = newQuantity;
+    const existingCart = await Cart.findOne({ user: userId }).populate("items.product");
+
+   
+    const productToUpdate = await Product.findById(product_Id);
+
+    if (productToUpdate) {
+      const selectedSize = productToUpdate.sizes.find((s) => s.size === size);
+      console.log(selectedSize,"lllll");
+      if (selectedSize && selectedSize.stock >= parseInt(qty)) {
+        if (existingCart) {
+       
+       
+          const existingCartItem = existingCart.items.find(
+            (item) => item.product._id.toString() === product_Id
+          );
+       
+          if (existingCartItem?.size==size) {
+            existingCartItem.quantity += parseInt(qty);
+        
+          } else {
+            existingCart.items.push({
+              product: product_Id,
+              quantity: parseInt(qty),
+              size
+            
+            });
+          }
           existingCart.total = existingCart.items.reduce(
             (total, item) => total + (item.quantity || 0),
             0
           );
-  
+
           await existingCart.save();
+         
+          return res.status(200).json({ success: true, message: 'Cart updated successfully' });
+        } else {
+
+          const newCart = new Cart({
+            user: userId,
+            items: [{ product: product_Id, quantity: parseInt(qty),size }],
+            total: parseInt(qty, 10),
+          });
+      
+          await newCart.save();
+          return res.status(200).json({ success: true, message: 'New cart created successfully' });
         }
-  
-        res.json({ success: true });
       } else {
-        res.json({ success: false, error: "Cart not found" });
+        return res.status(400).json({ success: false, message: 'Out of stock or invalid quantity' });
+        
       }
-    } catch (error) {
-      console.error("Error updating cart:", error);
-      res.json({ success: false, error: "Internal server error" });
+    } else {
+      return res.status(400).json({ success: false, message: 'Product not found' });
     }
-  };
+  } catch (error) {
+    console.error("Error adding product to cart:", error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+
+const updateCartCount = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const productId = req.query.productId;
+
+    const { newQuantity, newSize } = req.body;
+   let newsizeData=parseInt(newSize, 10)
+
+    const existingCart = await Cart.findOne({ user: userId }).populate("items.product");
+
+
+   const productToUpdate = await Product.findById(productId);
+   const selectedSize = productToUpdate.sizes.find((s) =>  s.size  === newSize
+  );
+ 
+
+    if (selectedSize && selectedSize.stock >= parseInt(newQuantity)) {
+    
+
+        const existingCartItem = existingCart.items.find((item) =>item.product._id.toString() === productId);
+
+        if ( existingCartItem && existingCartItem.size === newsizeData) {
+
+          existingCartItem.quantity = parseInt(newQuantity);
+          existingCart.total = existingCart.items.reduce(
+            (total, item) => total + (item.quantity || 0),
+            0
+          );
+        }
+
+        await existingCart.save();
+        return res.status(200).json({ success: true, message: 'Cart updated successfully' });
+     
+    }    else {
+      return res.status(400).json({ success: false, error: 'Out of stock or invalid quantity' });
+    }
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.json({ success: false, error: "Internal server error" });
+  }
+};
+
 
 
 

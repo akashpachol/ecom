@@ -43,7 +43,12 @@ const loadHome = async (req, res) => {
     const adminData = await User.findById(req.session.admin_id);
 console.log(  req.session,"kkkk");
     if (adminData) {
-      res.render("admin/adminHome", { admin: adminData });
+      const orderCount = await Order.find({}).count();
+      const productCount = await Product.find({}).count();
+      res.render("admin/adminHome", { admin: adminData,
+        orderCount,
+        productCount,
+      });
     } else {
       res.status(404).send("User not found");
     }

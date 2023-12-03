@@ -48,6 +48,7 @@ const orderSchema = new mongoose.Schema({
       },
       quantity: Number,
       price: Number,
+      size:Number,
     },
   ],
 });

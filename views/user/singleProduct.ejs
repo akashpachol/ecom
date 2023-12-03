@@ -61,6 +61,9 @@
                     <span></span> Fashion
                     <span></span> Abstract Print Patchwork Dress
                 </div>
+                <div id="cartNotification" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
+                    Item added to cart!
+                  </div>
             </div>
         </div>
         <section class="mt-50 mb-50">
@@ -160,7 +163,7 @@
 
                                                 <% product.sizes.forEach(sizeData=> { %>
 
-                                                    <li><a href="#">
+                                                    <li  onclick="setSize('<%= sizeData.size %>')"><a href="#">
                                                             <%= sizeData.size %>
                                                         </a></li>
 
@@ -173,20 +176,20 @@
 
 
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                        <form action="/cart" method="post">
-                                            <input type="hidden" value="<%= product._id %>"name="productData_id" id="">
+                                     
+                                            <input type="hidden" value="<%= product._id %>"   name="productData_id" id="productData_id">
                                             <div class="detail-extralink">
-                                                <input type="number" name="qty" class="w-25 py-4" value="1" min="1" max="10">
+                                                <input type="number" name="qty" id="qty" class="w-25 py-4" value="1" min="1" max="10">
                                                 <div class="product-extra-link2 w-50 my-1">
     
-                                                    <button type="submit" class=" btn-product btn-cart"><span>Add To Cart</span></button>
+                                                    <button type="submit"onclick="addToCart()" class=" btn-product btn-cart"><span>Add To Cart</span></button>
     
     
                                                     <button aria-label="Add To Wishlist" class=" btn action-btn hover-up p-3  "
                                                         ><i class="fi-rs-heart  "></i></button>
                                                 </div>
                                             </div>
-                                        </form>
+                                   
                                      
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
@@ -219,6 +222,56 @@ function changeMainImage(imageUrl) {
 
       this.style.transformOrigin = `${x}% ${y}%`;
     });
+let sizeData;
+    function setSize(size) {
+        sizeData= size;
+}
+
+    function addToCart() {
+
+    const qtyData = document.getElementById('qty').value;
+    const productDataId =  document.getElementById('productData_id').value;
+   
+
+
+    if (qtyData && productDataId ) {
+      const requestData = {
+        qty: qtyData,
+        size: sizeData,
+        productData_id: productDataId
+      };
+
+
+      fetch('/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+      .then(response => response.json())
+      .then(data => {
+   
+        if (data.success) {
+          const notification = document.getElementById('cartNotification');
+      notification.style.display = 'block';
+
+      // Hide the notification after 2 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+        window.location.href = `/singleProduct/${productDataId}`;
+      }, 1000);
+          
+        } else {
+          alert('Error occurred while placing order');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error occurred while placing order');
+      });
+    }
+  }
     </script>
   
     <%- include('../Layout/UserFooter.ejs') %>

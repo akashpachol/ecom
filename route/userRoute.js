@@ -56,7 +56,9 @@ userRoute.delete("/removeCartItem", cartControler.removeFromCart);
 // order
 userRoute.get('/checkout',orderController.loadCheckout );
 userRoute.post('/checkout',orderController.checkOutPost );
+userRoute.post('/razorpayOrder',orderController.razorpayOrder );
 userRoute.get('/orderSuccess',orderController.loadOrderDetails );
 userRoute.get('/orderDetails/:id',orderController.loadOrderHistory );
 userRoute.get('/orderCancel',orderController.orderCancel );
+userRoute.post('/return',orderController.returnData );
 module.exports=userRoute

@@ -32,13 +32,7 @@
                     <div class="card-header">
                         <h4>Picture</h4>
                     </div>
-                    <!-- <div class="card-body">
-                        <div class="input-upload">
-                            <img src="/assets/imgs/upload.webp" style="width:100px; height: 100px;" alt="">
-                            <input class="form-control" type="file" name="image" id="category_image">
-                            <div class="error-message" style="color: red;" id="category_image-error"></div>
-                        </div>
-                    </div> -->
+              
                     <div class="card-body">
                         <div class="input-upload">
                             <div class="images-container">
@@ -160,19 +154,25 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 
-
-           
-       
-
-
-
-
-
-
-
-
-
-
+function removeCartItem(productId) {
+    fetch(`/removeCartItem?productId=${productId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            localStorage.setItem('productRemoved', 'true');
+            location.reload();
+            
+        } else {
+            console.error('Failed to remove cart item:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing cart item:', error);
+    });
+}
+   
         </script>
 
 

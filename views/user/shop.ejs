@@ -1,3 +1,5 @@
+
+
 <%- include('../Layout/UserHeader.ejs') %>
 
 <main class="main">
@@ -7,22 +9,21 @@
         <a href="index.html" rel="nofollow">Home</a>
         <span></span> Shop
       </div>
+
+    </div>
+    <div id="cartNotification" style="display: none; position: fixed; top: 20px; right: 20px; background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
+      Item added to cart!
     </div>
   </div>
   <section class="mt-50 mb-50">
     <div class="container">
       <div class="row">
+        
         <div class="col-lg-9">
-          <div class="shop-product-fillter">
-            <div class="totall-product">
-              <p>
-                We found <strong class="text-brand">688</strong> items for you!
-              </p>
-            </div>
-            <div class="sort-by-product-area"></div>
-          </div>
+
           <div class="row product-grid-3">
-            <% for (const product of products) { 
+            <% for (let product of products) { 
+      
               const categoryId =
             product.category; categories.forEach(category => { if
             (categoryId.toString() === category._id.toString()) { if
@@ -71,15 +72,42 @@
                     <span class="old-price"> ₹<%= product.price %></span>
                     <% } %>
                   </div>
-                  <form id="myForm" action="/cart" method="post">                   
+                                
     <div class="product-action-1 show">
-        <input type="hidden" value="<%= product._id %>" name="productData_id"> 
-        <input type="hidden" value="1" name="qty">
-        <button type="button" aria-label="Add To Cart"  class="action-btn hover-up" >
+
+        <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal<%= product._id%>" aria-label="Add To Cart"  class="action-btn hover-up" >
             <i class="fi-rs-shopping-bag-add"></i>
         </button>
     </div>
-</form>
+
+    <div class="modal fade" id="exampleModal<%= product._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <% product.sizes.forEach(sizeData => { 
+          if (sizeData.stock>0) {
+            %>
+          <div class="d-flex justify-content-start">
+            <input type="hidden" class="productData_id" value="<%= product._id %>" />
+            <input type="hidden" class="qty" value="1" />
+            <input type="radio" class="size" value="<%= sizeData.size %>" style="width:25px" />
+            <label class="ms-3 mt-3"><%= sizeData.size %></label>
+          </div>
+        <%
+          }
+      
+      
+      }); %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="addToCart('<%= product._id %>')" class="btn btn-primary">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
                 </div>
               </div>
             </div>
@@ -111,8 +139,7 @@
                 <a href="shopCategoryFilter?id=<%= category._id %>" >
                   <option value="<%= category._id %>">
                     <%= category.name %>
-                  </option></a
-                >
+                  </option></a>
               </li>
 
               <% } }); %>
@@ -170,11 +197,49 @@
 
 </main>
 <script>
-  function submitForm() {
-    var form = document.getElementById("myForm");
-        form.submit();
-  }
+  function addToCart(productId) {
+    const modal = document.getElementById(`exampleModal${productId}`);
+    const qtyData = modal.querySelector('.qty').value;
+    const productDataId = modal.querySelector('.productData_id').value;
+    const sizeElement = modal.querySelector('.size:checked');
+    const sizeData = sizeElement ? sizeElement.value : null;
 
-  
-  </script>
+    if (qtyData && productDataId && sizeData) {
+      const requestData = {
+        qty: qtyData,
+        size: sizeData,
+        productData_id: productDataId
+      };
+    
+
+      fetch('/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const notification = document.getElementById('cartNotification');
+      notification.style.display = 'block';
+
+ 
+      setTimeout(() => {
+        notification.style.display = 'none';
+        window.location.href = '/shop';
+      }, 1000);
+          
+        } else {
+          alert('Error occurred while placing order');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error occurred while placing order');
+      });
+    }
+  }
+</script>
 <%- include('../Layout/UserFooter.ejs') %>

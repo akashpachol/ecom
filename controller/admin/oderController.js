@@ -21,7 +21,7 @@ const listUserOrders = async (req, res) => {
           path: "items.product",
           model: "Product",
         })
-     console.log(orders,"akkkkkk");
+
       res.render("admin/allOrder", { order:orders });
     } catch (error) {
       console.log(error.message);
@@ -32,7 +32,7 @@ const listOrderDetails=async(req,res)=>{
         try {
      
           const orderId = req.query.id;
-          console.log(orderId,"aakkkdfkfkk");
+  
           const order = await Order.findById(orderId)
           .populate("user")
           .populate({
@@ -43,7 +43,7 @@ const listOrderDetails=async(req,res)=>{
             path: "items.product",
             model: "Product",
           })
-            console.log(order,"akkakakksjjds");
+     
           res.render("admin/orderDetails", { order });
         } catch (error) {
           console.log(error.message);
@@ -53,11 +53,11 @@ const listOrderDetails=async(req,res)=>{
 }
 const orderStatusChange = async (req, res) => {
     try {
-        console.log("startttttt");
+  
       const orderId = req.query.id;
       const status = req.query.status;
  
-      console.log(orderId,status,"kkkkkkkk");
+   
  
    
  
@@ -94,9 +94,16 @@ const orderStatusChange = async (req, res) => {
   }; 
 
 
+  const loadSalesReport =async(req,res)=>{
+
+
+  res.render("admin/salesReport" );
+  }
+
   
   module.exports={
     listUserOrders,
     listOrderDetails,
-    orderStatusChange
+    orderStatusChange,
+    loadSalesReport
   }

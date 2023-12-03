@@ -181,7 +181,7 @@ const loadForgetpassword = async (req, res) => {
 const forgotPasswordOTP = async (req, res) => {
   try {
     const emaildata = req.body.email;
-    console.log("Email received:", emaildata);
+  
 
     const userExist = await User.findOne({ email: emaildata });
     req.session.userData=userExist;
@@ -256,6 +256,7 @@ const loadShop = async (req, res) => {
     const productData = await Product.find();
     const categories = await Category.find();
     const brands = await Brand.find();
+    
     res.render("user/shop", { products: productData, userData, categories,brands });
   } catch (error) {
     console.log(error.message);
@@ -352,7 +353,7 @@ const userEdit = async (req, res) => {
     }
 
   
-
+  
     res.redirect("/userprofile");
   } catch (error) {
     console.log(error.message);

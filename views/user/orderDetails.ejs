@@ -1,250 +1,7 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
-
-
-<head>
-    <meta charset="utf-8">
-    <title>Hookah</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-
-    <link rel="shortcut icon" type="image/x-icon" href="/userassets/imgs/theme/favicon.svg">
-    <link href="/css/main.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="/userassets/css/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-</head>
-
-<body>
-  
-
-
-   
-  
-    
-    <header class="header-area header-style-1 header-height-2">
-        
-      
-        <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
-            <div class="container">
-                <div class="header-wrap">
-                   
-                    <div class="header-right">
-                        <div class="search-style-2">
-                       
-                        </div>
-                        <div class="header-action-right">
-                        
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="header-bottom header-bottom-bg-color sticky-bar">
-            <div class="container">
-                <div class="header-wrap header-space-between position-relative">
-                    <div class="logo logo-width-1 d-block d-lg-none">
-                        <a href="index.html"><img src="/userassets/imgs/theme/logo.svg" alt="logo"></a>
-                    </div>
-                    <div class="header-nav d-none d-lg-flex">
-                        <div class="main-categori-wrap d-none d-lg-block">
-                            <div class="logo logo-width-1">
-                                <a href="index.html"><img src="/userassets/imgs/theme/logo.svg" alt="logo"></a>
-                            </div>
-                        </div>
-                        <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
-                            <nav>
-                                <ul>
-                                    <li><a class="active" href="/">Home </a>
-                                    </li>
-                                    <li>
-                                        <a href="page-about.html">About</a>
-                                    </li>
-                                    <li><a href="/shop">Shop </a>
-                                    </li>
-                                     
-                                    </li>
-                                    <li>
-                                        <a href="page-contact.html">Contact</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="hotline d-none d-lg-block">
-                        <div class="header-action-2">
-                            
-                            <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
-                                    <img class="svgInject" alt="Evara" src="/userassets/imgs/theme/icons/icon-heart.svg">
-                                    <span class="pro-count blue">4</span>
-                                </a>
-                            </div>
-                            <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="/cart">
-                                    <img alt="Evara" src="/userassets/imgs/theme/icons/icon-cart.svg">
-                                    <span class="pro-count blue">2</span>
-                                </a>
-                                
-                            </div>
-                            <div class="header-action-icon-2">
-                         
-                                <% if (userData) {
-                                 
-                                    %>
-                                  
-                              <ul class=" navbar-nav ms-auto me-3 me-lg-4">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                      <img class="svgInject" alt="Evara" src="/userassets/imgs/theme/icons/icon-user.svg">
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="/userprofile">Settings</a></li>
-                                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                                        <li><hr class="dropdown-divider" /></li>
-                                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
-                                    </ul>
-                                </li>
-                            </ul> 
-                               <% } else {%>    
-                            
-                                <a class="" href="/login">
-                                    <img alt="Evara" class="w-50" src="/userassets/imgs/theme/icons/icon-user.svg">
-                                  
-                                </a>
-                                
-                           
-                              <%
-                                    
-                                } %>
-                          </div>
-                        </div>
-                    </div>
-               
-                    <div class="header-action-right d-block d-lg-none">
-                        <div class="header-action-2">
-                            <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
-                                    <img alt="Evara" src="/userassets/imgs/theme/icons/icon-heart.svg">
-                                
-                                    <span class="pro-count white">4</span>
-                                </a>
-                            </div>
-                            <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
-                                    <img alt="Evara" src="/userassets/imgs/theme/icons/icon-cart.svg">
-                                    <span class="pro-count white">2</span>
-                                </a>
-                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                    <ul>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="/userassets/imgs/shop/thumbnail-3.jpg"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
-                                                <h3><span>1 × </span>$800.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="/userassets/imgs/shop/thumbnail-4.jpg"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Macbook Pro 2022</a></h4>
-                                                <h3><span>1 × </span>$3500.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="shopping-cart-footer">
-                                        <div class="shopping-cart-total">
-                                            <h4>Total <span>$383.00</span></h4>
-                                        </div>
-                                        <div class="shopping-cart-button">
-                                            <a href="shop-cart.html">View cart</a>
-                                            <a href="shop-checkout.html">Checkout</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="header-action-icon-2 d-block d-lg-none">
-                                <div class="burger-icon burger-icon-white">
-                                    <span class="burger-icon-top"></span>
-                                    <span class="burger-icon-mid"></span>
-                                    <span class="burger-icon-bottom"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div class="mobile-header-active mobile-header-wrapper-style">
-        <div class="mobile-header-wrapper-inner">
-            <div class="mobile-header-top">
-                <div class="mobile-header-logo">
-                    <a href="index.html"><img src="/userassets/imgs/theme/logo.svg" alt="logo"></a>
-                </div>
-                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                    <button class="close-style search-close">
-                        <i class="icon-top"></i>
-                        <i class="icon-bottom"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="mobile-header-content-area">
-              
-                <div class="mobile-menu-wrap mobile-header-border">
-               
-                    <!-- mobile menu start -->
-                    <nav>
-                        <ul class="mobile-menu">
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="index.html">Home</a>
-                            
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="page-about.html">about</a>
-                              
-                            </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="/shop">shop</a>
-                              
-                            </li>
-                          
-                         
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="page-contact.html">Contact</a>
-                           
-                            </li>
-                        
-                        </ul>
-                    </nav>
-                    <!-- mobile menu end -->
-                </div>
-             
-              
-            </div>
-        </div>
-    </div>
-
+<%- include('../Layout/UserHeader.ejs') %>
       
         <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h5 class="content-title card-title">Order detail</h5>
-                    <p>Details for Order ID: 3453012</p>
-                </div>
-            </div>
+          
             <div class="card">
                 <header class="card-header">
                     <div class="row align-items-center">
@@ -254,13 +11,49 @@
                             </span> <br>
                             <small class="text-muted">Order ID: 3453012</small>
                         </div>
-                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                     
-                            <a  class="btn bg-danger" href="/orderCancel?id=<%= order._id %>">cancel</a>
-                            <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end d-flex justify-content-end">
+                    <% if (order.status=="Confirmed" ) {
+                       %> <a  class="btn bg-danger" href="/orderCancel?id=<%= order._id %>">cancel</a> <%
+                    } else if (order.status=="Delivered") {
+                        %>  <button  class="btn bg-success"   id="returnButton" data-bs-toggle="modal" data-bs-target="#exampleModal">return</button><%
+                    } %>      
+                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
                         </div>
                     </div>
                 </header>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+    <label class="form-label">Reason</label>
+    <!-- Adjust the "rows" attribute to set the number of visible rows -->
+    <textarea placeholder="Type here" name="reason" class="form-control" rows="10" id="reason"></textarea>
+    <div class="error-message" style="color: red;" id="reason-error"></div>
+</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="returnProduct('<%= order._id %>')">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
                 <div class="card-body">
                     <div class="row mb-50 mt-20 order-info-wrap">
                         <div class="col-md-4">
@@ -380,7 +173,86 @@
                 </div>
             </div> 
         </section> 
- 
+        <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const dateString = '<%= order.deliveryDate %>'; // Assuming you get the delivery date from your backend
+    const formattedDate = dateString.replace(/-/g, '/');
+    const deliveryDate = new Date(formattedDate);
+    const currentDate = new Date();
+    const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000;
+
+    if (currentDate.getTime() - deliveryDate.getTime() <= sevenDaysInMillis) {
+      // Check if the order is delivered
+      if ('<%= order.status %>' === 'Delivered') {
+        const returnButton = document.getElementById('returnButton');
+        if (returnButton) {
+          returnButton.style.display = 'block'; // Show the return button
+        }
+      }
+    } else {
+      // Hide the return button if more than 7 days have passed since delivery
+      const returnButton = document.getElementById('returnButton');
+      if (returnButton) {
+        returnButton.style.display = 'none';
+      }
+    }
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+<script>
+
+
+function returnProduct(id) {
+  
+            const reason = document.getElementById('reason').value;
+      
+
+console.log(id,"akkkkk");
+
+
+            if (!reason) {
+                alert('Please select an address.');
+           
+            }
+       
+         
+
+            const requestData = {
+
+                reason,
+             
+            };
+
+            fetch(`/return?id=${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/orderSuccess';
+                        console.log("sucess");
+                    } else {
+                        alert('Error occurred while placing order');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occurred while placing order');
+                });
+        }
+
+
+
+
+
+</script>
+
+
 
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -392,5 +264,4 @@
 </body>
 
 
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:22 GMT -->
 </html>

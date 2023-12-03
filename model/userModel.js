@@ -30,7 +30,10 @@ const user= mongoose.Schema({
     type:String
    
 },
-
+walletBalance: {
+    type: Number,
+    default: 0,
+  },
 
   is_blocked:{
     type:Number,
