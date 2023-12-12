@@ -37,9 +37,7 @@
                     <li class="nav-item">
                       <a class="nav-link"  href="/orderSuccess" ><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href=""><i class="fi-rs-shopping-cart-check mr-10"></i>Wallets</a>
-                    </li>
+          
 
 
                     <li class="nav-item">
@@ -100,10 +98,10 @@ if (address.is_listed ) {
 
 
                             <div class="">
-                              <a href="editAddress?id=<%= address._id %>" class="btn-small">Edit</a>
+                              <a href="editAddress?id=<%= address._id %>"  class="btn-small">Edit</a>
                             </div>
                             <div class="ms-2">
-                              <a href="deleteAddress?id=<%= address._id %>" class="btn-small">delete</a>
+                              <a href="deleteAddress?id=<%= address._id %>"  class="btn-small">delete</a>
                             </div>
                           </div>
 
@@ -133,9 +131,50 @@ if (address.is_listed ) {
       </div>
     </section>
   </main>
+<script>
+
+  function ProductUnlist(productId) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Please confirm to block this product!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform the deletion via AJAX/fetch to the server
+          fetch(`/admin/unlistCategory?id=${productId}`, {
+            method: 'GET',
+            // Add other necessary headers or configurations
+          }).then(response => {
+            if (response.ok) {
+              // Product successfully deleted
+              Swal.fire({
+                title: "success",
+                text: "Please confirm to unblock this product!",
+                icon: "success",
+                timer: 2000,
+                timeProgressBar: true,
+                showConfirmButton: false,
 
 
-
+              })
+                .then(() => {
+                  // Redirect after displaying the success message
+                  window.location.href = '/admin/category'; // Redirect to a suitable page
+                });
+            } else {
+              Swal.fire("Error!", "Failed to delete product", "error");
+            }
+          }).catch(error => {
+            Swal.fire("Error!", "Failed to delete product", "error");
+          });
+        }
+      });
+    }
+  </script>
   
 
   <%- include('../Layout/UserFooter.ejs') %>

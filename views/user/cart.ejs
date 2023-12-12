@@ -49,7 +49,7 @@
                                 </thead>
                                 <tbody>
 
-                                    <% if (cart.length>0) {
+                                    <% if (cart?.length>0) {
                                         cart.forEach((cartData,index)=>{
                                         %>
                                         <p></p>
@@ -142,8 +142,12 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To
-                                        CheckOut</a>
+                            
+                                        <a href="/checkout" class="btn btn-primary">
+                                            <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut
+                                        </a>
+                                  
+                                   
                                 </div>
                             </div>
                         </div>

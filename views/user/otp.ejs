@@ -53,7 +53,11 @@
                                   <button class="btn btn-success px-4 py-0  validate text-center" id="resendButton">
                                     <a href="/resendOTP" class="text-white">resend</a>
                                   </button>                                </div>
-                            
+                                  <div id="invalid text-center">
+                                    <% if (typeof error !== 'undefined' && error) { %>
+                                        <p class="text-danger text-center" id="message text-center"><%= error %></p>
+                                    <% } %>
+                                </div>  
                             </form>
                        
                           </div>

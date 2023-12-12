@@ -78,12 +78,11 @@ const addTocart = async (req, res) => {
 
     const existingCart = await Cart.findOne({ user: userId }).populate("items.product");
 
-   
     const productToUpdate = await Product.findById(product_Id);
 
     if (productToUpdate) {
       const selectedSize = productToUpdate.sizes.find((s) => s.size === size);
-      console.log(selectedSize,"lllll");
+     
       if (selectedSize && selectedSize.stock >= parseInt(qty)) {
         if (existingCart) {
        
@@ -91,7 +90,7 @@ const addTocart = async (req, res) => {
           const existingCartItem = existingCart.items.find(
             (item) => item.product._id.toString() === product_Id
           );
-       
+         
           if (existingCartItem?.size==size) {
             existingCartItem.quantity += parseInt(qty);
         
@@ -118,7 +117,7 @@ const addTocart = async (req, res) => {
             items: [{ product: product_Id, quantity: parseInt(qty),size }],
             total: parseInt(qty, 10),
           });
-      
+   
           await newCart.save();
           return res.status(200).json({ success: true, message: 'New cart created successfully' });
         }

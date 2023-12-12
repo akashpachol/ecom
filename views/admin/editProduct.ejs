@@ -6,13 +6,20 @@
             <div class="row">
                 <div class="col-12">
                     <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
+                        <h2 class="content-title">Edit Product</h2>
                         <div>
                             <a href='/admin/prdouctList'> <button
                                     class="btn btn-light rounded font-sm mr-5 text-body hover-up">cancel</button></a>
                             <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload"
                               >
-
+                              <div id="invalid">
+                                <% if (typeof error !=='undefined' && error) { %>
+                                    <p class="text-danger" id="message">
+                                        <%= error %>
+                                    </p>
+                                    <% } %>
+                                    
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,7 +77,7 @@
 
 
                                     </select>
-                                    <div class="error-message" style="color: red;" id="product_brand-error"></div>
+                                    <div class="error-message" style="color: red;" id="product_category-error"></div>
 
                                 </div>
 
@@ -86,7 +93,7 @@
                             <div class="row gx-3">
                                 <div class="col-md-4">
                                     <label for="inputPrice" class="form-label">price</label>
-                                    <input type="text" class="form-control"  value="<%= product.price %>" name="price" id="inputprice"
+                                    <input type="text" class="form-control"  value="<%= product.price %>" name="price" id="product_price"
                                         placeholder="enter the price">
                                     <div class="error-message" style="color: red;" id="product_price-error"></div>
                                 </div>
@@ -98,8 +105,8 @@
                                     <label class="form-label">Discount Price</label>
 
                                     <input type="number" name="discoutPrice"  value="<%= product.discount_price %>" placeholder="Type here"
-                                        class="form-control" id="product_discount">
-                                    <div class="error-message" style="color: red;" id="product_discount-error"></div>
+                                        class="form-control" id="discount_price">
+                                    <div class="error-message" style="color: red;" id="discount_price-error"></div>
 
 
 
@@ -108,7 +115,7 @@
                           
                                 <div class="col-md-4 mb-3">
                                     <label for="inputAddress2" class="form-label">gender</label>
-                                    <select name="gender" class="form-control">
+                                    <select name="genderData" class="form-control">
                                         <option value="" disabled selected>Select a Category
                                         </option>
                                         <% gender?.forEach(value=> { %>
@@ -117,6 +124,7 @@
                                             </option>
                                             <% }); %>
                                     </select>
+                                    <div class="error-message" style="color: red;" id="gender-error"></div>
                                 </div>
 
                             </div>
@@ -158,7 +166,7 @@
 
                             <div>
                                 <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" name="description"   class="form-control"
+                                <textarea placeholder="Type here" name="description" id="description"  class="form-control"
                                     rows="4"><%= product.description %></textarea>
                                 <div class="error-message" style="color: red;" id="description-error"></div>
 
@@ -322,58 +330,113 @@
 
 
 
- 
 function validationChecking() {
-        const product_title = document.getElementById("product_title").value;
-        const description = document.getElementById("description").value;
-        const product_price = document.getElementById("product_price").value;
-        const discount_price = document.getElementById("discount_price").value;
-        const product_category = document.querySelector('select[name="category"]').value.trim();
+    const product_title = document.getElementById("product_title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const product_price = parseFloat(document.getElementById("product_price").value);
+    const discount_price = parseFloat(document.getElementById("discount_price").value);
+    const product_category = document.querySelector('select[name="category"]').value.trim();
     const product_brand = document.querySelector('select[name="brand"]').value.trim();
-    const product_gender = document.querySelector('select[name="gender"]').value.trim();
+    const product_gender = document.querySelector('select[name="genderData"]').value.trim();
+    const imageInput = document.querySelector('input[name="image"]');
+        const imageError = document.getElementById("product_image-error");
+    const product_title_error = document.getElementById("product_title-error");
+    const description_error = document.getElementById("description-error");
+    const product_price_error = document.getElementById("product_price-error");
+    const product_category_error = document.getElementById("product_category-error");
+    const product_brand_error = document.getElementById("product_brand-error");
+    const gender_error = document.getElementById("gender-error");
+    const discount_price_error = document.getElementById("discount_price-error");
 
+    let formIsValid = true;
 
-   
+    if (!(product_title.length >= 2 && /^[a-zA-Z\s]/.test(product_title))) {
+        product_title_error.innerHTML = "Please enter a valid product name";
+        formIsValid = false;
+    } else {
+        product_title_error.innerHTML = "";
+    }
+
+    if (isNaN(product_price) || product_price < 1) {
+        product_price_error.innerHTML = "Please enter a valid price";
+        formIsValid = false;
+    } else {
+        product_price_error.innerHTML = "";
+    }
+
+    if (!(description.length >= 2 && /^[a-zA-Z\s]/.test(description))) {
+        description_error.innerHTML = "Please enter product description";
+        formIsValid = false;
+    } else {
+        description_error.innerHTML = "";
+    }
+
+    if (product_category === "") {
+        product_category_error.innerHTML = "Please select a category";
+        formIsValid = false;
+    } else {
+        product_category_error.innerHTML = "";
+    }
+
+    if (product_brand === "") {
+        product_brand_error.innerHTML = "Please select a brand";
+        formIsValid = false;
+    } else {
+        product_brand_error.innerHTML = "";
+    }
+    if (product_gender === "") {
+        gender_error.innerHTML = "Please select a valid gender";
+        formIsValid = false;
+    } else {
+        gender_error.innerHTML = "";
+    }
+
+    if (isNaN(discount_price) || discount_price < 1 || discount_price >= product_price) {
+        if (isNaN(discount_price) || discount_price < 1) {
+            discount_price_error.innerHTML = "Please enter a valid discount";
+        } else if (discount_price >= product_price) {
+            discount_price_error.innerHTML = "Discount cannot be equal or greater than product price";
+        }
+        formIsValid = false;
+    } else {
+        discount_price_error.innerHTML = "";
+    }
+    if (imageInput.files.length === 0) {
+            imageError.innerHTML = "Please upload at least one image";
+            formIsValid = false;
+        } else {
+            imageError.innerHTML = "";
+        }
+    // Size Validation
+    const sizeCount = 5; // Assuming 5 size inputs, update as needed
     for (let i = 1; i <= sizeCount; i++) {
-    const sizeInput = document.getElementById(`size${i}`).value;
-    const stockInput = document.getElementById(`stock${i}`).value;
+        const sizeInput = document.getElementById(`size${i}`).value.trim();
+        const stockInput = document.getElementById(`stock${i}`).value.trim();
 
+        const sizeError = document.getElementById(`size${i}-error`);
+        const stockError = document.getElementById(`stock${i}-error`);
 
-    const sizeError = document.getElementById(`size${i}-error`);
-    const stockError = document.getElementById(`stock${i}-error`);
- 
+        sizeError.innerHTML = sizeInput === "" || isNaN(sizeInput) || parseFloat(sizeInput) < 0
+            ? "Please enter a valid size"
+            : "";
+        stockError.innerHTML = stockInput === "" || isNaN(stockInput) || parseFloat(stockInput) < 0
+            ? "Please enter valid stock"
+            : "";
 
-    // Check if any of the fields are empty or invalid
-    sizeError.innerHTML = sizeInput.trim() === "" || isNaN(sizeInput) || parseFloat(sizeInput) < 0
-        ? "Please enter a valid size"
-        : "";
+        if (sizeError.innerHTML !== "" || stockError.innerHTML !== "") {
+            formIsValid = false;
+        }
+    }
 
-    stockError.innerHTML = stockInput.trim() === "" || isNaN(stockInput) || parseFloat(stockInput) < 0
-        ? "Please enter valid stock"
-        : "";
-
+    if (formIsValid) 
+            return true;
+         else  return false;
+          
+           
+        
+    
 }
-        const product_title_error = document.getElementById("product_title-error");
-        const description_error = document.getElementById("description-error");
-        const product_price_error= document.getElementById("product_price-error");
-        const product_category_error = document.getElementById("product_category-error");
-        const product_brand_error = document.getElementById("product_brand-error");
-        const gender_error = document.getElementById("gender-error");
-        const discount_price_error = document.getElementById("discount_price-error");
 
-        product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
-        description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
-        product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
-        product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
-        product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
-        gender_error.innerHTML = product_gender.trim() === "" ? "Please enter gender" : "";
-        discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
-
-
-       
-       
-        return !(product_title.trim() === "" || description.trim() === "" || product_price.trim() === ""|| discount_price.trim() === "" || product_category.trim() === "" || product_brand.trim() === "" || product_gender.trim() === ""); 
-       }
 
 
     </script>

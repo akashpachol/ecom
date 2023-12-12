@@ -2,7 +2,7 @@
 
 
 const calculateSubtotal = (cart) => {
- console.log(cart,"hello bai");
+
     let subtotal = 0;
     for (const cartItem of cart) {
  

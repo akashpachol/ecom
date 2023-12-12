@@ -1,3 +1,6 @@
+
+
+<%- include('../layout/UserHeader.ejs') %>
 <style>
     /* Increase the size of the increment and decrement buttons */
     input[type="number"]::-webkit-inner-spin-button,
@@ -51,7 +54,6 @@
 
 </style>
 
-<%- include('../Layout/UserHeader.ejs') %>
 
     <main class="main">
         <div class="page-header breadcrumb-wrap">
@@ -180,12 +182,12 @@
                                             <input type="hidden" value="<%= product._id %>"   name="productData_id" id="productData_id">
                                             <div class="detail-extralink">
                                                 <input type="number" name="qty" id="qty" class="w-25 py-4" value="1" min="1" max="10">
-                                                <div class="product-extra-link2 w-50 my-1">
+                                                <div class="product-extra-link2 w-50 ">
     
                                                     <button type="submit"onclick="addToCart()" class=" btn-product btn-cart"><span>Add To Cart</span></button>
     
     
-                                                    <button aria-label="Add To Wishlist" class=" btn action-btn hover-up p-3  "
+                                                    <button aria-label="Add To Wishlist" class=" btn action-btn hover-up "
                                                         ><i class="fi-rs-heart  "></i></button>
                                                 </div>
                                             </div>

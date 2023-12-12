@@ -77,7 +77,7 @@
 
               products.forEach(product => {
 
-              if (product.is_listed ) {
+            
               %>
 
               <tr>
@@ -138,8 +138,9 @@
                     %>
 
                     <span class="badge rounded-pill alert-success">Published</span>
-                    <% }else if(productStock==0){ %>
-                      <span class=" badge rounded-pill text-bg-danger ">
+                    <% }else if(productStock===0){ %>
+                    
+                      <span class=" badge rounded-pill alert-danger ">
                         out of stock
                       </span>
 
@@ -154,16 +155,23 @@
                 </td>
 
                 <td>
-
-                  <a onclick="ProductUnlist('<%= product._id %>')" class="btn text-danger  font-sm rounded btn-light">
-                    <i class="material-icons md-edit"></i> delete
+                  <% if (product.is_listed ) { %>
+                    <a onclick="ProductUnlist('<%= product._id %>')" class="btn text-danger  font-sm rounded btn-light">
+                    <i class="material-icons md-edit"></i> list
                   </a>
+                <% } else { %>
+                  <a onclick="ProductUnlist('<%= product._id %>')" class="btn text-danger  font-sm rounded btn-light">
+                    <i class="material-icons md-edit"></i> unlist
+                  </a>
+                <% } %>
+               
+                 
                   <a href="/admin/editProduct/?id=<%= product._id%>" class="btn text-warning font-sm rounded btn-light">
                     <i class="material-icons md-edit"></i> Edit
                   </a>
                 </td>
               </tr>
-              <% } }); } else { %>
+              <%  }); } else { %>
                 <tr>
                   <td colspan="6">
                     <p>User not found</p>

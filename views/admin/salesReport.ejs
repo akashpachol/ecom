@@ -2,15 +2,24 @@
 
         <section class="content-main">
             <div class="content-header">
-          
-                <!-- <div>
-                    <a href="/admin/salesReport?status=Daily" class="btn btn-sm rounded <%#= req.query.status === 'Daily' ? 'btn-dark' : 'btn-light' %>">Daily</a>
-                    <a href="/admin/salesReport?status=Weekly" class="btn btn-sm rounded <%#= req.query.status === 'Weekly' ? 'btn-dark' : 'btn-light' %>">Weekly</a>
-                    <a href="/admin/salesReport?status=Yearly" class="btn btn-sm rounded <%#= req.query.status === 'Yearly' ? 'btn-dark' : 'btn-light' %>">Yearly</a>
-                  </div> -->
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </button>
+                <ul class="dropdown-menu">
+                  <a href="/admin/salesReport?status=All" class="dropdown-item" >All</a>
+                  <a href="/admin/salesReport?status=Daily" class="dropdown-item" >Daily</a>
+                  <a href="/admin/salesReport?status=Weekly" class="dropdown-item" >Weekly</a>
+                  <a href="/admin/salesReport?status=Monthly" class="dropdown-item" >Monthly</a>
+                  <a href="/admin/salesReport?status=Yearly" class="dropdown-item" >Yearly</a>
+           
+                </ul>
+              </div>
                   <div class="row">
                     <div class="col-md-12 text-right">
                             <button id="pdfButton" class="btn btn-secondary print ms-2"><i class="icon material-icons md-print"></i> Download </button>
+                            <button class="btn btn-secondary print ms-2"  onclick="export_data()"><i class="icon material-icons md-print"></i> xlsx </button>
+
                  </div>
                 </div>
                   
@@ -19,31 +28,18 @@
             
             <div class="card mb-4">
                 <header class="card-header">
-                    <div class="row align-items-center" style="">
+                    <div class="row align-items-center" >
                         
                 <form action="" method="get">
 
                     <div style="display: flex;  align-items: center;">
                       <input type="text" id="searchInput" class="form-control" placeholder="Search for products...">
 
-                        <input type="date" class="form-control" name="startDate" id="">
-                        <input type="date" class="form-control" name="endDate" id=""> 
-                      <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+                        
+                      <div class="col-md-1 col-12 me-auto mb-md-0 mb-3" style="display: flex;">
+                 
 
-                        <label for="paymentMethod" class="form-control">Select Status:</label>
-                        <select name="paymentMethod" class="form-select" id="paymentMethod">
-                            <option value="" selected>All</option>
-                            <option value="Online Payment">RazorPay</option>
-                            <option value="Wallet">Wallet</option>
-                            <option value="Cash On Delivery">Cash On Delivery</option>
-                           
-
-
-                        </select>
-                      </div>
-     
-                        <input type="submit" class="btn btn-sm font-sm rounded btn-brand" value="Filter">
-
+                      
                   </div>
                 </form>
            
@@ -59,16 +55,16 @@
                 
             </div>
 
-            <p>Total Revenue: <%#= totalRevenue.toFixed(2) %> USD</p>
+            <p>Total Revenue:₹ <%= totalRevenue.toFixed(2) %> </p>
 
 <!-- Display Number of Orders with Status "Returned" -->
-<p>Number of Returned Orders: <%#= returnedOrders.length %></p>
+<!-- <p>Number of Returned Orders: <%#= returnedOrders.length %></p> -->
 
 <!-- Display Total Number of Sales -->
-<p>Total Sales: <%#= totalSales %></p>
+<p>Total Sales: <%= totalSales %></p>
 
 <!-- Display Number of Products Sold -->
-<p>Total Products Sold: <%#= totalProductsSold %></p>
+<p>Total Products Sold: <%= totalProductsSold %></p>
 
 <!-- Display Product that is Mostly Sold -->
 
@@ -83,16 +79,38 @@
                 <th scope="col">Delivery Date</th>
                 <th scope="col">Total</th>
                 <th scope="col">Status</th>
-                <th scope="col">Payment Status</th>
+              
                 <th scope="col">Payment Method</th>
               </tr>
             </thead>
             <tbody>
-                
-               
-
-            
+              <% orders.forEach((order) => {
+                order.items.forEach((item) => { %>
+                  <tr>
+                    <td><%= order._id %></td>
+                    <td><%= order.user.name %></td>
+                    <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
+                    <td><%= new Date(order.deliveryDate).toLocaleDateString() %></td>
+                    <td><%= order.totalAmount %></td>
+                    <td>
+                      <% if (item.status == 'Confirmed') { %>
+                        <span class="badge badge-pill badge-soft-info"><%= item.status %></span>
+                      <% } else if (item.status == 'Shipped') { %>
+                        <span class="badge badge-pill badge-soft-dark"><%= item.status %></span>
+                      <% } else if (item.status == 'Delivered') { %>
+                        <span class="badge badge-pill badge-soft-success"><%= item.status %></span>
+                      <% } else { %>
+                        <span class="badge badge-pill badge-soft-danger"><%= item.status %></span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <p><%= item.paymentMethod %></p>
+                    </td>
+                  </tr>
+                <% });
+                   }); %> 
             </tbody>
+            
           </table>
           
                 </div> <!-- card-body end// -->
@@ -140,35 +158,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+$(document).ready(function ($) {
+          $(document).on('click', '#pdfButton', function (event) {
+              event.preventDefault();
+              var element = document.getElementById('products');
+              let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+              var opt = {
+                  margin: 0,
+                  filename: 'SalesReport' + randomNumber + '.pdf',
+                  html2canvas: { scale: 10 },
+                  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+              };
+  
+              html2pdf().set(opt).from(element).save();
+      
+          });
+      });
 
-    $(document).ready(function () {
-        $('#products').DataTable({
-            "paging": false,  
-        });
-    });
+      function export_data() {
+  let data = document.getElementById('products');
+  let wb = XLSX.utils.table_to_book(data, { sheet: 'vishal' });
 
-    function updateProductList(categoryId) {
-        $.ajax({
-            type: "GET",
-            url: "/products", 
-            data: { categoryId: categoryId },
-            success: function (data) {
-                $("#product-list").html(data);
-            },
-            error: function (error) {
-                console.error("Error:", error);
-            }
-        });
-    }
+  let wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
 
-    document.getElementById('category-filter').addEventListener('change', function () {
-        const categoryId = this.value;
-        updateProductList(categoryId);
-    });
+  function s2ab(s) {
+    const buf = new ArrayBuffer(s.length);
+    const view = new Uint8Array(buf);
+    for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+    return buf;
+  }
 
-    $(document).ready(function () {
-        updateProductList('');
-    });
+  let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+  saveAs(blob, 'test.xlsx'); // This will prompt a download for the file
+}
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+<!-- xlsx.core.min.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.core.min.js"></script>
 <%- include('../Layout/adminFooter.ejs') %>

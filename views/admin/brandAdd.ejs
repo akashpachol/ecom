@@ -1,6 +1,6 @@
 <%- include('../Layout/adminHeader.ejs') %>
 
-<form action="/admin/addBrand" method="post" enctype="multipart/form-data" id="category-form"  onsubmit="return validationChecking()">
+<form action="/admin/addBrand" method="post" enctype="multipart/form-data" id="brand"  onsubmit="return validationChecking()">
     <section class="content-main">
         <div class="row">
             <div class="col-9">
@@ -46,17 +46,25 @@
                                 <div class="image-preview-container d-flex flex-wrap justify-content-center">
                                     <!-- Placeholder for default image -->
                                     <div class="image-container border-1">
-                                        <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploadimage.svg" alt="Default" class="image-preview" id="category_image_preview">
+                                        <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploadimage.svg" alt="Default" class="image-preview" id="brand_image_preview">
                                     </div>
                                 </div>
-                                <input class="form-control" type="file" name="image" id="category_image">
+                                <input class="form-control" type="file" name="image" id="brand_image">
                             </div>
-                            <div class="error-message" style="color: red;" id="category_image-error"></div>
+                            <div class="error-message" style="color: red;" id="brand_image-error"></div>
                         </div>
                     </div>
                 </div> <!-- card end// -->
                 <div>
                     <input type="submit" value="submit" class="btn btn-md rounded font-sm hover-up">
+                </div>
+                <div id="invalid">
+                    <% if (typeof error !=='undefined' && error) { %>
+                        <p class="text-danger" id="message">
+                            <%= error %>
+                        </p>
+                        <% } %>
+                        
                 </div>
             </div>
         </div>
@@ -65,11 +73,11 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-        const categoryImageInput = document.getElementById('category_image');
-        const categoryImagePreview = document.getElementById('category_image_preview');
+        const brand_imageInput = document.getElementById('brand_image');
+        const brand_image_preview = document.getElementById('brand_image_preview');
 
-        categoryImageInput.addEventListener('change', function() {
-            displayCategoryImage(this, categoryImagePreview);
+        brand_imageInput.addEventListener('change', function() {
+            displayCategoryImage(this, brand_image_preview);
             });
         });
 
@@ -95,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const brand_image = document.getElementById("brand_image");
     const brand_image_error = document.getElementById("brand_image-error");
 
-    category_name.addEventListener('input', function() {
+    brand_name.addEventListener('input', function() {
         brand_name_error.innerHTML = brand_name.value.trim() === "" ? "Please enter Brand name" : "";
     });
 
@@ -103,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         description_error.innerHTML = description.value.trim() === "" ? "Please enter Brand description" : "";
     });
 
-    category_image.addEventListener('change', function() {
+    brand_image.addEventListener('change', function() {
         brand_image_error.innerHTML = brand_image.value.trim() === "" ? "Please enter Brand image" : "";
     });
 });
@@ -117,14 +125,23 @@ function validationChecking() {
     const description_error = document.getElementById("description-error");
     const brand_image_error = document.getElementById("brand_image-error");
 
-    brand_name_error.innerHTML = brand_name.trim() === "" ? "Please enter Brand name" : "";
-    description_error.innerHTML = description.trim() === "" ? "Please enter Brand description" : "";
-    // brand_image_error.innerHTML = brand_image.trim() === "" ? "Please enter Brand image" : "";
+
+
+    brand_name_error.innerHTML = brand_name.trim() === "" ? "Please enter brand name" : "";
+    description_error.innerHTML = description.trim() === "" ? "Please enter brand description" : "";
+
     if (!brand_image) {
         brand_image_error.innerHTML = "Please upload an image";
         return false; // Prevent form submission if no image is uploaded
     } else {
-        const allowedTypes = ["image/jpeg", "image/png", "image/gif"]; // Add more types if needed
+        const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/bmp",
+  "image/webp",
+
+];// Add more types if needed
         if (!allowedTypes.includes(brand_image.type)) {
             brand_image_error.innerHTML = "Please upload a valid image file (JPEG, PNG, GIF)";
             return false; // Prevent form submission if the file type is not allowed
@@ -133,8 +150,8 @@ function validationChecking() {
             return true; // Proceed with form submission
         }
     }
-    // return !(brand_name.trim() === "" || description.trim() === "" || brand_image.trim() === "");
 }
+
 </script>
 
 

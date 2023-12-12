@@ -35,7 +35,7 @@
                                       <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="/orderSuccess" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                   </li>
                                   <li class="nav-item">
-               <a class="nav-link" href=""><i class="fi-rs-shopping-cart-check mr-10"></i>Wallets</a>                                  </li>
+                                     </li>
                              
                                
                                   <li class="nav-item">
@@ -45,50 +45,109 @@
                           </div>
                       </div>
                       <div class="col-md-9">
-                      
+                        <div class="row">
+
+
+                            <% order?.forEach(order_data=> {
+                              %> <div class="col-lg-12">
+                                <div class="card mb-3 mb-lg-0">
+                                  <div class="card-header">
+                                    <h5 class="mb-0">
+          
+                                   
+          
+          
+                                      
+                                          <div class="d-flex justify-content-between">
+                                            <div>
+                                              <span>
+                                                <%= order_data._id %>
+          
+                                              </span>
+                                            </div>
+                                            <div>
+                                              <span>
+          
+                                                <a href="/orderDetails/<%= order_data._id%>" class="btn-small d-block">View</a>
+                                              </span>
+                                            </div>
+                                          </div>
+          
+                                      
+                                    </h5>
+                                  </div>
+                               <%order_data.items.forEach((item_value)=>{
+                                console.log(item_value,"item_value");
+%>
+                           <div class="card-body row">
+                                    <div class="col-5">
+                                        <div class="d-flex align-items-center">
+                    <img src='/assets/imgs/productIMG/<%=item_value.product.image[0]%>' alt="<%= item_value.image%>"
+                      style="width: 65px; height: 65px" class="rounded-circle" />
+                    <div class="ms-3">
+                      <p class="fw-bold mb-1">
+                        <%= item_value.product.name %>
+                      </p>
+
+                    </div>
+                  </div>
+                                  
+                                    </div>
+                                    <div class="col-1"></div>
+                                    <div class="col-1">
+                                        <%= item_value.product.discount_price %>
+                                        </div>
+                                    <div class="col-1"></div>
+                                    <div class="col-4 ">
+                                        <div class="_3SbeKb _2cm2Hi"></div>
+                                 
+                                       <% if ( item_value.status =='Delivered') {%>
+                                        <span class="fw-900">Delivered on  <%= new Date(order_data.deliveryDate).toLocaleDateString() %></span>
+                          
+     <%
+                                       }else{%>
+                                        <span class="fw-900">Arriving  on  <%= new Date(order_data.deliveryDate).toLocaleDateString() %></span>
+                                      <%
+                                       }%>
+                                 
+                                       <% if (item_value.status =='Delivered') {%>
+                                        <div class="fw-300">Your item has been delivered   <%= item_value.status %></div>
+     <% }else{%>
+                                 
+                                        <div class="fw-300">Your item has been received in the hub nearest to you</div>
+                                        <%
+                                       }%>
+          
+                                     
+                                    </div>
+                                
+                                  </div>
+
+<%
+
+
+                               }) %>
+                                  
+                                  
+                                </div>
+                              </div>
+          
+          
+          
+          
+          
+          
+          
+          
+                              <%
+                        }); %>
+                          </div>
                            
                                   
 
                                 
                                      
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h5 class="mb-0">Your Orders</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Order</th>
-                                                                    <th>Order Date</th>
-                                                                    <th>Delivery Date</th>
-                                                                    <th>Status</th>
-                                                                    <th>Total</th>
-                                                                    <th>Actions</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <% order.forEach(function(order_data) { 
-                                                                  %>
-                                                                                    
-                                                                <tr>
-                                                                    <td><%= order_data._id %></td>
-                                                                    <td>     <%= new Date(order_data.orderDate).toLocaleDateString() %></td>
-                                                                    <td>     <%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
-                                                                   
-                                                                    <td><%= order_data.status %></td>
-                                                                    <td><%= order_data.totalAmount %></td>
-                                                                    <td><a href="/orderDetails/<%= order_data._id%>" class="btn-small d-block">View</a></td>
-                                                                </tr>
-                                                                         <% 
-                                                                             }) %>
-                                                               
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                      
                                        
                                  
                                   </div>

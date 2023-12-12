@@ -9,9 +9,9 @@ const orderController=require('../controller/admin/oderController')
 const adminAuth = require("../middleware/adminAuth");
 const bodyParser = require('body-parser');
 
-adminRoute.use(bodyParser.urlencoded({ extended: true }));
 
-adminRoute.use(bodyParser.json());
+
+
 
 // LOGIN
 adminRoute.get("/", adminAuth.isLogout, adminController.loadAdminLogin);
@@ -56,7 +56,7 @@ adminRoute.post("/editProduct",multer.uploadProduct.array('image'), productContr
 // All ORDERS
 adminRoute.get("/alluserorders", adminAuth.isLogin, orderController.listUserOrders);
 adminRoute.get("/orderDetails", adminAuth.isLogin, orderController.listOrderDetails);
-adminRoute.get("/orderStatusChange", adminAuth.isLogin, orderController.orderStatusChange);
+adminRoute.put("/orderStatusChange", orderController.orderStatusChange);
 adminRoute.get("/salesReport", adminAuth.isLogin, orderController.loadSalesReport);
 
 module.exports = adminRoute;

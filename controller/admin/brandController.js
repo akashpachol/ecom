@@ -26,13 +26,15 @@ const loadBrandform = async(req,res)=>{
          image=req.file.filename
     }
      
-      const existingBrand = await Brand.findOne({ category: name });
-  
+ 
+      const existingBrand = await Brand.findOne({
+        name: { $regex: new RegExp(`^${name}$`, 'i') },
+      });
   
       if (existingBrand) {
         res.render('admin/brandAdd', {
             error: "Brand with the same name already exists",
-            admin: adminData
+       
         });
     } else {
         const brand = new Brand({
@@ -86,6 +88,7 @@ const loadBrandform = async(req,res)=>{
 
 
       let id=req.body.brand_id
+      
       
       const existingBrand = await Brand.findOne({
         name: { $regex: new RegExp(`^${req.body.name}$`, 'i') },

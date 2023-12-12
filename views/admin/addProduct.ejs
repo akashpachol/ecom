@@ -10,7 +10,14 @@
                             <a href='/admin/prdoucts'> <button
                                     class="btn btn-light rounded font-sm mr-5 text-body hover-up">cancel</button></a>
                                     <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Upload">
-
+                                    <div id="invalid">
+                                        <% if (typeof error !=='undefined' && error) { %>
+                                            <p class="text-danger" id="message">
+                                                <%= error %>
+                                            </p>
+                                            <% } %>
+                                            
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -103,7 +110,7 @@
     
                                 <div class="col-md-4 mb-3">
                                     <label for="inputAddress2" class="form-label" id="gender">gender</label>
-                                    <select name="gender" class="form-control">
+                                    <select name="genderData" class="form-control">
                                         <option value="" disabled selected>Select a Category
                                         </option>
                                         <% gender?.forEach(value=> { %>
@@ -149,71 +156,81 @@
                
 
                 <div class="col-lg-3">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Picture</h4>
-                                </div>
-                                <div class="card-body">
-                                    
-                                    <div class="card mb-4">
-                                        <div class="card-body">
-                                            
-                                            <div class="images-container">
-                                                <div class="image-preview-container d-flex flex-wrap justify-content-center">
-                                                    <!-- Placeholder for default image -->
-                                                    <div class="image-container border-1">
-                                                        <img style="width: 100px; height: 100px; margin-bottom: 20px;" src="/uploadimage.svg" alt="Default" class="image-preview">
-                                                    </div>
-                                                </div>
-                                                <input class="form-control" name="image"  multiple="multiple" type="file" onchange="displayImages(this)">
-                                                <div class="error-message" style="color: red;" id="product_image-error"></div>
-                                            </div>
-                                            
-                                            <script>
-                                                function displayImages(input) {
-                                                    const previewContainer = document.querySelector('.image-preview-container');
-                                                    previewContainer.innerHTML = ''; // Clear previous previews
-                                            
-                                                    if (input.files && input.files.length > 0) {
-                                                        for (let i = 0; i < input.files.length; i++) {
-                                                            const reader = new FileReader();
-                                                            reader.onload = function (e) {
-                                                                const imagePreview = document.createElement('div');
-                                                                imagePreview.classList.add('image-container');
-                                                                const img = document.createElement('img');
-                                                                img.src = e.target.result;
-                                                                img.style.width = '100px';
-                                                                img.style.height = '100px';
-                                                                img.style.marginBottom = '20px';
-                                                                img.style.marginRight = '5px'; 
-                                                                img.style.marginLeft = '5px'; 
-                                                                img.classList.add('image-preview');
-                                                                imagePreview.appendChild(img);
-                                                                previewContainer.appendChild(imagePreview);
-                                                            };
-                                                            reader.readAsDataURL(input.files[i]);
-                                                        }
-                                                    } else {
-                                                        const defaultImagePreview = document.createElement('div');
-                                                        defaultImagePreview.classList.add('image-container');
-                                                        const defaultImg = document.createElement('img');
-                                                        defaultImg.src = '/uploadimage.svg';
-                                                        defaultImg.style.width = '100px';
-                                                        defaultImg.style.height = '100px';
-                                                        defaultImg.style.marginBottom = '20px';
-                                                        defaultImg.style.marginRight = '5px'; 
-                                                        defaultImg.style.marginLeft = '5px'; 
-                                                        defaultImg.classList.add('image-preview');
-                                                        defaultImagePreview.appendChild(defaultImg);
-                                                        previewContainer.appendChild(defaultImagePreview);
-                                                    }
-                                                    
-                                                }
-                                            </script>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
+                    <div class="card mb-4">
+  <div class="card-header">
+      <h4>Media</h4>
+  </div>
+  <div class="card-body">
+      <div class="input-upload">
+          <img src="/assetsb/imgs/theme/upload.svg" alt="">
+          <div id="imagePreview" class="image-preview"></div>
+          <input required name="image" id="imageInput" class="form-control" type="file" accept="image/*" multiple>
+      </div>
+  </div>
+  <script>
+      const imgPreview = document.getElementById('imagePreview');
+      const inputField = document.getElementById('imageInput');
+  
+      inputField.addEventListener('change', function(event) {
+          const files = event.target.files;
+          imgPreview.innerHTML = ''; // Clear the previous preview images
+  
+          for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              const reader = new FileReader();
+  
+              reader.onload = function(e) {
+                  const img = document.createElement('img');
+                  img.src = e.target.result;
+                  img.style.maxWidth = '100px'; // Set max width for the preview image
+  
+                  const deleteBtn = document.createElement('button');
+                  deleteBtn.innerText = 'X';
+                  deleteBtn.style.borderRadius = '100%'; // Makes the button round
+                  deleteBtn.style.backgroundColor = 'red'; // Sets the background color to red
+                  deleteBtn.style.color = 'white'; // Sets the text color to white
+                  deleteBtn.style.border = 'none'; // Removes the button border
+                  deleteBtn.style.padding = '5px 10px'; // Adjusts padding for better appearance
+                  deleteBtn.addEventListener('click', function() {
+                      img.parentNode.removeChild(img); // Remove the image element
+                      deleteBtn.parentNode.removeChild(deleteBtn);
+                      removeAndReconstructInput(file); // Remove the file and reconstruct the input field
+                  });
+  
+                  const container = document.createElement('div');
+                  container.appendChild(img);
+                  container.appendChild(deleteBtn);
+                  imgPreview.appendChild(container); // Append the new image preview with delete button
+              };
+  
+              reader.readAsDataURL(file);
+          }
+      });
+  
+      function removeAndReconstructInput(fileToRemove) {
+          const index = Array.from(inputField.files).findIndex(file => file === fileToRemove);
+          if (index !== -1) {
+              removeFileFromFileList(index); // Call the removeFileFromFileList function passing the index
+          }
+      }
+  
+      function removeFileFromFileList(index) {
+          const dt = new DataTransfer();
+          const files = inputField.files;
+  
+          for (let i = 0; i < files.length; i++) {
+              if (index !== i) {
+                  const file = files[i];
+                  dt.items.add(file); // Exclude the file based on the provided index
+              }
+          }
+  
+          inputField.files = dt.files; // Assign the updated file list to the input field
+      }
+  </script>
+  
+      
+</div>
                       
                         </div>
 

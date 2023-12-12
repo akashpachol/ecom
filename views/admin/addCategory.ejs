@@ -154,25 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 
-function removeCartItem(productId) {
-    fetch(`/removeCartItem?productId=${productId}`, {
-        method: 'DELETE',
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem('productRemoved', 'true');
-            location.reload();
-            
-        } else {
-            console.error('Failed to remove cart item:', data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error removing cart item:', error);
-    });
-}
-   
+
         </script>
 
 

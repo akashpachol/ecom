@@ -1,6 +1,23 @@
+<style>
+.product-img img {
+  width: 100%; 
+  height: auto; 
+  display: block; 
+}
 
 
-<%- include('../Layout/UserHeader.ejs') %>
+.product-img {
+  max-height: 300px; 
+  overflow: hidden; 
+}
+.product-cart-wrap {
+  height: 400px; 
+  overflow: hidden; /
+}
+  
+</style>
+
+<%- include('../layout/UserHeader.ejs') %>
 
 <main class="main">
   <div class="page-header breadcrumb-wrap">
@@ -165,30 +182,7 @@
             </ul>
           </div>
       
-          <div class="sidebar-widget price_range range mb-30">
-            <div class="widget-header position-relative mb-20 pb-10">
-              <h5 class="widget-title mb-10">Fill by price</h5>
-              <div class="bt-1 border-color-1"></div>
-            </div>
-            <div class="price-filter">
-              <div class="price-filter-inner">
-                <div id="slider-range"></div>
-                <div class="price_slider_amount">
-                  <div class="label-input">
-                    <span>Range:</span><input
-                      type="text"
-                      id="amount"
-                      name="price"
-                      placeholder="Add Your Price"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-         
-            <a href="shop-grid-right.html" class="btn btn-sm btn-default"
-              ><i class="fi-rs-filter mr-5"></i> Fillter</a>
-          </div>
+          
       
         </div>
       </div>
@@ -241,5 +235,29 @@
       });
     }
   }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("searchInput");
+  const productGrid = document.querySelector(".product-grid-3");
+  const productItems = productGrid.getElementsByClassName("product-cart-wrap");
+
+  searchInput.addEventListener("keyup", function () {
+    const searchText = searchInput.value.toLowerCase();
+
+    for (let i = 0; i < productItems.length; i++) {
+      const productName = productItems[i]
+        .getElementsByClassName("product-content-wrap")[0]
+        .getElementsByTagName("h2")[0]
+        .textContent.toLowerCase();
+
+      if (productName.includes(searchText)) {
+        productItems[i].style.display = "";
+      } else {
+        productItems[i].style.display = "none";
+      }
+    }
+  });
+});
 </script>
 <%- include('../Layout/UserFooter.ejs') %>

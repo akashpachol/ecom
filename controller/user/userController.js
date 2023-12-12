@@ -95,13 +95,13 @@ const verifyOtp = async (req, res) => {
           res.render("user/otp", { message: "Registration Failed" });
         }
       } else {
-        res.render("user/otp", { message: "invailid otp" });
+        res.render("user/otp", { error: "invailid otp" });
       }
     } else {
       if (fullOTP == req.session.otp) {
         res.redirect("/resetPassword");
       } else {
-        res.render("user/otp", { message: "invailid otp" });
+        res.render("user/otp", { error: "invailid otp" });
       }
     }
   } catch (error) {
@@ -111,7 +111,7 @@ const verifyOtp = async (req, res) => {
 
 const resendOTP = async (req, res) => {
   try {
-    // Retrieve user data from session storage
+    
     const userData = req.session.userData;
 
     if (!userData) {
@@ -121,7 +121,7 @@ const resendOTP = async (req, res) => {
       const data = await message.sendVarifyMail(req, userData.email);
     }
 
-    // Generate and send new OTP using Twilio
+
 
     res.render("user/otp", { message: "OTP resent successfully" });
   } catch (error) {
@@ -205,7 +205,8 @@ const loadResetPassword = async (req, res) => {
   try {
     if (req.session.user_id) {
       const userId = req.session.user_id;
-      console.log(userId, "akash");
+
+      
       const user = await User.findById(userId);
 
       res.render("user/resetPassword", { User: user });

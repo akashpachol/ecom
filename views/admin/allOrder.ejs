@@ -53,7 +53,7 @@
                 <th>Order</th>
                 <th>Order Date</th>
                 <th>Delivery Date</th>
-                <th>Status</th>
+                
                 <th>Total</th>
                 <th>Actions</th>
             </tr>
@@ -67,7 +67,7 @@
                 <td>     <%= new Date(order_data.orderDate).toLocaleDateString() %></td>
                 <td>     <%= new Date(order_data.deliveryDate).toLocaleDateString() %></td>
                
-                <td><%= order_data.status %></td>
+        
                 <td><%= order_data.totalAmount %></td>
                 <td><a href="/admin/orderDetails?id=<%= order_data._id %>" class="btn-small d-block">View</a></td>
             </tr>
