@@ -30,14 +30,32 @@ const user= mongoose.Schema({
     type:String
    
 },
-walletBalance: {
-    type: Number,
-    default: 0,
-  },
-
-  is_blocked:{
+is_blocked:{
     type:Number,
     default:1,
 },
+
+referralCode: {
+    type: String,
+    default: RandomReferralCode,
+    unique: true, 
+},
+userReferred: [{
+    type: String,
+    unique: true,
+}],
 })
+
+
+function RandomReferralCode() {
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const codeLength = 6;
+    let referralCode = '';
+    for (let i = 0; i < codeLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        referralCode += characters.charAt(randomIndex);
+    }
+    return referralCode;
+    }
 module.exports=mongoose.model("User",user)

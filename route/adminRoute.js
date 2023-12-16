@@ -7,8 +7,8 @@ const productController=require('../controller/admin/productController')
 const brandController=require('../controller/admin/brandController')
 const orderController=require('../controller/admin/oderController')
 const adminAuth = require("../middleware/adminAuth");
-const bodyParser = require('body-parser');
-
+const couponController=require('../controller/admin/couponController')
+const offerController=require('../controller/admin/offerController')
 
 
 
@@ -59,4 +59,17 @@ adminRoute.get("/orderDetails", adminAuth.isLogin, orderController.listOrderDeta
 adminRoute.put("/orderStatusChange", orderController.orderStatusChange);
 adminRoute.get("/salesReport", adminAuth.isLogin, orderController.loadSalesReport);
 
+// COUPON
+adminRoute.get("/coupenAdd", adminAuth.isLogin,couponController.loadCouponAdd );
+adminRoute.post("/coupenAdd",couponController.addCoupon );
+adminRoute.get("/couponList", adminAuth.isLogin,couponController.loadCouponList );
+adminRoute.get("/couponEdit", adminAuth.isLogin,couponController.loadEditCoupon );
+adminRoute.put("/couponEdit",couponController.editCoupon );
+adminRoute.get("/couponUnlist", adminAuth.isLogin, couponController.unlistCoupon);
+adminRoute.get("/couponDetails", adminAuth.isLogin, couponController.couponDetails);
+
+// offer
+adminRoute.get("/offerAdd", adminAuth.isLogin,offerController.loadOfferAdd );
+adminRoute.post("/offerAdd",offerController.addOffer );
+adminRoute.get("/offerlist", adminAuth.isLogin,offerController.OfferList );
 module.exports = adminRoute;

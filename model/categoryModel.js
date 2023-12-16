@@ -17,12 +17,17 @@ const Category= new mongoose.Schema({
         type:Boolean,
         defalut:true
     },
-
-
-
     categoryAddDate: {
         type: Date,
         default: Date.now, // Store the current date and time when the user is created
       },
+
+      discountStatus:{
+        type:Boolean,
+        default:false
+      },
+      discount:String,
+      discountStart:Date,
+      discountEnd:Date,
 });
 module.exports=mongoose.model("Category",Category)

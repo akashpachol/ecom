@@ -101,7 +101,7 @@ const addProduct = async (req, res) => {
     await addProducts.save();
     res.redirect("/admin/products");
   } catch (error) {
-    console.log(error.message);
+
     res.status(500).send("Error while adding product");
   }
 };

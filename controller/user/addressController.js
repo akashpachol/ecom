@@ -18,8 +18,6 @@ const loadAddress = async (req, res) => {
       console.log(error.message);
     }
   };
-
-
   const loadAddAddress = async (req, res) => {
     try {
         const userId =  req.session.user_id;
@@ -30,18 +28,10 @@ const loadAddress = async (req, res) => {
           } else {
             res.redirect('/login');
           }
-    
-   
     } catch (error) {
       console.log(error.message);
     }
   };
-  
-
-  
-
-    
-
 
   const addAddress = async (req, res) => {
     try {
@@ -119,7 +109,7 @@ const loadAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
   try {
     const id = req.query.id;
-    console.log(id, "kkkkkk");
+
     const addressData = await Address.findByIdAndUpdate(
       { _id: id },
       {

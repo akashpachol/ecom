@@ -4,6 +4,7 @@ const Product = require("../../model/productModel");
 const message = require("../../config/mailer");
 const Category = require("../../model/categoryModel");
 const Brand = require("../../model/brandModel");
+const Wallet=require("../../model/walletModel")
 const securePassword = async (password) => {
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -16,7 +17,8 @@ const securePassword = async (password) => {
 // get register
 const loadRegister = async (req, res) => {
   try {
-    res.render("user/register");
+    referral = req.query.referralCode;
+    res.render("user/register",referral);
   } catch (error) {
     console.log(error.message);
   }
@@ -35,15 +37,28 @@ const insertUser = async (req, res) => {
         message: "Please fill in all the fields",
       });
     }
-
+    req.session.referralCode = req.body.referralCode || null;
+    const referralCode = req.session.referralCode;
     const existMail = await User.findOne({ email: email });
     // const existnumber = await User.findOne({ email: email });
+    if (referralCode) {
+      referrer = await User.findOne({ referralCode });
 
+      if (!referrer) {
+        res.render("user/register", { message: "Invalid referral code." });
+      }
+
+      if (referrer.userReferred.includes(req.body.email)) {
+        res.render("user/register", {
+          message: "Referral code has already been used by this email.",
+        });
+      }
+    }
     if (existMail) {
       res.render("user/register", { message: "this user already exists" });
     } else {
       req.session.userData = req.body;
-      req.session.register = 1;
+      req.session.registerOtpVerify = 1;
       req.session.email = email;
       if (req.session.email) {
         const data = await message.sendVarifyMail(req, req.session.email);
@@ -90,6 +105,53 @@ const verifyOtp = async (req, res) => {
         const userDataSave = await user.save();
         if (userDataSave && userDataSave.isAdmin === 0) {
           req.session.user_id = userDataSave._id;
+
+          if (req.session.referralCode) {
+        
+            const walletData = await Wallet.findOne({ user: req.session.user_id });
+    if (walletData) {
+      walletData.walletBalance +=50;
+      walletData.transaction.push({
+        type: "credit",
+        amount:50,
+      });
+    
+      await walletData.save(); 
+    }else{
+      const wallet = new Wallet({
+        user: req.session.user_id,
+        transaction:[{type:"credit",amount:50}],
+        walletBalance:50,
+    });
+    await wallet.save();
+    }
+   
+            const referrer = await User.findOne({
+              referralCode: req.session.referralCode,
+            });
+            const user = await User.findOne({ _id: req.session.user_id });
+            referrer.userReferred.push(user.email);
+            await referrer.save();
+            const walletrefer = await Wallet.findOne({ user: referrer._id });
+          
+            if (walletrefer) {
+              walletrefer.walletBalance +=100;
+              walletrefer.transaction.push({
+                type: "credit",
+                amount:100,
+              });
+            
+              await walletrefer.save(); 
+            }else{
+              const wallet = new Wallet({
+                user: referrer._id,
+                transaction:[{type:"credit",amount:100}],
+                walletBalance:100,
+            });
+            await wallet.save();
+            }
+            
+          }
           res.redirect("/");
         } else {
           res.render("user/otp", { message: "Registration Failed" });
@@ -159,7 +221,7 @@ const verifyLogin = async (req, res) => {
         res.redirect("/");
       } else {
         res.render("user/login", {
-          message: "email and password is incorrect",
+          message: "email and password is incorrect"
         });
       }
     } else {

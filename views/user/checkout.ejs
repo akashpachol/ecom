@@ -47,21 +47,24 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <!-- <div class="toggle_info">
+                        <div class="toggle_info">
                         <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                    </div> -->
+                    </div>
                         <div class="panel-collapse collapse coupon_form " id="coupon">
                             <div class="panel-body">
                                 <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
                                 <form method="post">
                                     <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
+                                        <input type="text" id="couponCodeInput" placeholder="Enter Coupon Code...">
                                     </div>
                                     <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
+                                        <button class="btn  btn-md" name="login" id="applyCouponButton">Apply Coupon</button>
                                     </div>
+                                    <div id="couponSuccessMessage" class="text-success"></div>
                                 </form>
                             </div>
+
+        
                         </div>
                     </div>
                 </div>
@@ -244,26 +247,17 @@
                                             <% }) } %>
                                                 <tr>
                                                     <th>SubTotal</th>
-                                                    <td class="product-subtotal" colspan="2">$<%=subtotalWithShipping %>
+                                                    <td class="product-subtotal" id="totalAmount" colspan="2">$<%=subtotalWithShipping %>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Shipping</th>
                                                     <td colspan="2"><em>Free Shipping</em></td>
                                                 </tr>
-                                                <tr>
-                                                    <th>Total</th>
-                                                    <td colspan="2" class="product-subtotal"><span
-                                                            class="font-xl text-brand fw-900">$<%=subtotalWithShipping
-                                                                %></span></td>
+                                                <tr class="summary-total">
+                                                    <td>Total after Coupon:</td>
+                                                    <td colspan="2"><span id="totalAfterCoupon"><%= subtotalWithShipping %></span></td>
                                                 </tr>
-
-
-
-
-
-
-
                                     </tbody>
                                 </table>
                             </div>
@@ -296,10 +290,22 @@
                                     </div>
                                 </div>
 
+                              
+
 
                             </div>
-
-                            <a href="#" id="btn_checkout" class="btn btn-fill-out btn-block mt-30">Place Order</a>
+                            <%if (subtotalWithShipping !=0) {%>
+                                
+                                <a href="#" id="btn_checkout" class="btn btn-fill-out btn-block mt-30">Place Order</a>
+                                <%
+                                
+                            }else{
+                                %>
+                                
+                                <button id="btn_checkout" class="btn btn-fill-out btn-block mt-30" disabled>Place Order</button>
+                                <% 
+                            } %>
+                           
                         </div>
                     </div>
                 </div>
@@ -310,6 +316,80 @@
     <script>
 
 
+        document.addEventListener('DOMContentLoaded', function () {
+  const applyCouponButton = document.getElementById('applyCouponButton');
+  const couponCodeInput = document.getElementById('couponCodeInput');
+  const orderTotalElement = document.getElementById('totalAmount');
+  const couponInfo = document.getElementById('couponInfo');
+
+  const couponCode = couponCodeInput.value;
+
+  applyCouponButton.addEventListener('click', async function (event) {
+            event.preventDefault();
+             const couponCode = couponCodeInput.value;
+
+    if (couponCode.trim() === '') {
+        Swal.fire({
+            title: 'Error',
+            text: 'Please enter a coupon code',
+            icon: 'error',
+        });
+        return;
+    }
+
+    try {
+        const response = await fetch('/applyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponCode }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Coupon application failed');
+        }
+
+        const data = await response.json();
+
+        console.log('Coupon Application Response:', data);
+
+        if (data.errorMessage) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Coupon error: ' + data.errorMessage,
+                icon: 'error',
+            });
+        } else {
+            const discountedTotal = data.discountedTotal;
+            const normalPrice = parseFloat(orderTotalElement.innerHTML.replace("₹", ""));
+            const difference = (normalPrice - discountedTotal).toFixed(0);
+
+            // Display coupon success message
+            couponSuccessMessage.innerText = 'Coupon applied successfully';
+
+            totalAfterCouponElement.innerText = `₹${discountedTotal}`;
+            couponCodeInput.readOnly = true;
+            Swal.fire({
+                title: 'Success',
+                text: 'Coupon applied successfully',
+                icon: 'success',
+            });
+        }
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+
+        Swal.fire({
+            title: 'Error',
+            text: 'Error applying coupon',
+            icon: 'error',
+        });
+    }
+});
+
+
+  const totalAfterCouponElement = document.getElementById('totalAfterCoupon');
+                const couponSuccessMessage = document.getElementById('couponSuccessMessage'); 
         let btn_checkout = document.getElementById('btn_checkout');
         btn_checkout.addEventListener('click', function () {
 
@@ -321,7 +401,7 @@
             const selectedAddress = document.querySelector('input[name="checkAddress"]:checked');
             let selectedPaymentMethod = document.querySelector('input[name="payment_option"]:checked').value;
 
-
+            const couponCode = couponCodeInput.value;
 
             if (!selectedAddress) {
                 const notification = document.getElementById('cartNotification');
@@ -340,8 +420,9 @@
 
                 address: address,
                 paymentMethod: selectedPaymentMethod,
+                couponCode
             };
-
+console.log(requestData,"requestData");
             if (selectedPaymentMethod == "CashOnDelivery"  ) {
                 fetch('/checkout', {
                     method: 'POST',
@@ -408,7 +489,7 @@
                                             headers: {
                                                 "Content-Type": "application/json",
                                             },
-                                            body: JSON.stringify(requestData),
+                                            body: JSON.stringify({ ...requestData, amount: (options.amount)/100 }),
                                         });
                            
 
@@ -483,11 +564,9 @@
                     });
             }
 
-
-
-
-
         }
+
+    })
 
 
 

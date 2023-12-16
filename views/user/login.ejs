@@ -77,6 +77,16 @@
                                       <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
                                   </div>
                               </form>
+
+                              <div id="text-center">
+                                <% if (typeof message !== 'undefined' && message) { %>
+                                    <p style="color: green;"class="text-center"><%= message %></p>
+                                <% } %>
+                            </div>  
+                            <div id="invalid text-center">
+                                <% if (typeof error !== 'undefined' && error) { %>
+                                    <p style="color: red;" id="message text-center"><%= error %></p>
+                                <% } %>
                               <div class="divider-text-center mt-15 mb-15">
                                 <span> or</span>
                             </div>

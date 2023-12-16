@@ -28,13 +28,13 @@ app.use(express.static(path.join(__dirname, "public/assets")));
 
 app.use(express.static(path.join(__dirname, "public/userassets")));
 
-// app.use((req,res,next)=>{
-//     res.setHeader(
-//       "Cache-Control",
-//       "no-store, no-cache, must-revalidate, private"
-//     );
-//     next()
-//   })
+app.use((req,res,next)=>{
+    res.setHeader(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, private"
+    );
+    next()
+  })
 // Create a simple route
 app.use("/", userRoute);
 app.use("/admin", adminRoute);

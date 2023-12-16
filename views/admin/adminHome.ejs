@@ -177,7 +177,11 @@
                           <% orders.forEach((order) => { %>
                               <tr>                    
                                 <td><%= order._id %></td>
-                                <td><%= order.user.name %></td>
+                                <% if (order.user) { %>
+                                    <td><%= order.user.name %></td>
+                                <% } else { %>
+                                    <td>User Not Available</td>
+                                <% } %>
                                 <td><%= new Date(order.orderDate).toLocaleDateString() %></td>
                                 <td> <%= new Date(order.deliveryDate).toLocaleDateString() %></td>
                                 <td><%= order.totalAmount %></td>

@@ -1,3 +1,44 @@
+
+<style>
+    .couponCard {
+        outline: #39f;
+  width: 250px;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgb(255, 255, 255);
+  color: #000000;
+  height: 250px;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.couponCard h1 {
+  font-size: 48px;
+  margin-bottom: 0px;
+}
+
+.couponCard span {
+  font-size: 28px;
+}
+
+.image {
+  position: absolute;
+  opacity: .1;
+  left: 0;
+  top: 0;
+}
+
+.image2 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  opacity: .1;
+}
+</style>
 <%- include('../Layout/UserHeader.ejs') %>
 
   <main class="main">
@@ -13,9 +54,9 @@
     <section class="pt-150 pb-150">
       <div class="container">
         <div class="row">
-          <div class="col-lg-10 m-auto">
+          <div class="col-lg-12 m-auto">
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-3 col-lg-3">
                 <div class="dashboard-menu">
                   <ul class="nav flex-column" role="tablist">
                     <!-- <li class="nav-item">
@@ -41,90 +82,74 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-md-8">
+              <div class="col-md-9 col-lg-9 d-flex justify-content-around">
+                <div class="tab-content">                           
 
+                    
 
-                <div class="card">
-                  <section class="content-body p-xl-4">
-                    <form action="/userprofile" enctype="multipart/form-data" method="post"
-                      onsubmit="return validationChecking()">
-                      <div class="row">
-                        <div class="col-lg-8">
-                          <div class="row gx-3">
-                            <input type="hidden" name="user_id" value="<%=userData._id%>">
-                            <div class="col-12  mb-3">
-                              <label class="form-label"> name</label>
-                              <input class="form-control" name="name" value="<%=userData.name%>" id="user_name"
-                                type="text" placeholder="Type here">
-                              <div id="errorName" class="ms-2 text-danger"></div>
+                    <div id="tab-account" aria-labelledby="tab-account-link">
+                        <div class="row">
+                            <% if (coupon.length > 0) { for (let i = 0; i < coupon.length; i++) { %>
+                            <div class="col-lg-4 mb-3">
+                                <div class="d-flex justify-content-center couponContainer container">
+                                    <div class="d-flex couponCard card text-center">
+                                        <div class="image"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                                        <div class="image2"><img src="https://i.imgur.com/DC94rZe.png" width="150"></div>
+                                        <h1><% if(coupon[i].type =='percentage') { %> <%= coupon[i].discount %>% <% }else{ %>₹  <%= coupon[i].discount %><%}%></h1><span class="d-block">Discount</span>
+                                        <span class="d-block text-muted" style="font-size: medium;">Expires at:- <br> <%= new Date(coupon[i].expiry).toLocaleDateString() %></span>
+                                        <% if (coupon[i].usersUsed.includes(userData._id)) { %>
+                                            <p>Coupon Redeemed</p>
+                                            <% } else { %>
+                                                <div class="mt-4"><small>With Code : <%= coupon[i].code %></small></div>
+                                        <a class="copy-coupon-btn btn btn-outline-2 " data-coupon="<%= coupon[i].code %>">
+
+                                            <span class="" style="font-size: medium;"><i class="fas fa-copy" ></i> Copy</span>
+                                        </a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <!-- End .card-dashboard -->
                             </div>
-
-                            <div class="col-lg-12  mb-3">
-                              <label class="form-label">Email</label>
-                              <input class="form-control" type="email" name="email" value="<%=userData.password%>"
-                                id="user_email" placeholder="example@mail.com" disabled>
-                              <div id="errorMail" class="ms-2 text-danger"></div>
+                            <!-- End .col-lg-6 -->
+                    
+                            <% } } else { %>
+                            <div class="col-6 col-md-4 col-xl-3">
+                                <p>No Coupon Found found</p>
                             </div>
-                            <div class="col-lg-12  mb-3">
-                              <label class="form-label">Phone</label>
-                              <input class="form-control" type="tel" name="mobile" value="<%=userData.mobile%>"
-                                id="user_phone" placeholder="+1234567890">
-                              <div id="errorMobile" class="ms-2 text-danger"></div>
-                            </div>
-
-
-
-                          </div>
+                            <% } %>
+                            
                         </div>
-                        <aside class="col-lg-4">
-                          <figure class="text-lg-center">
-                            <% if (userData.image) { %><img class="img-lg mb-3 img-avatar" id="previewImage"
-                                src="/userassets/imgs/user/<%=userData.image %>" alt="User Photo">
-                              <% }else{ %><img class="img-lg mb-3 img-avatar" id="previewImage"
-                                  src="assets/imgs/people/avatar1.jpg" alt="User Photo">
-                                <% } %>
-                                  <figcaption>
-                                    <label for="fileUpload" class="btn btn-light rounded font-md">
-                                      <i class="icons material-icons md-backup font-md"></i> Upload
-                                    </label>
-                                    <input type="file" name="image" id="fileUpload" style="display: none;">
-                                    <div id="errorfileUpload" class="ms-2 text-danger"></div>
-                                  </figcaption>
-                          </figure>
-                        </aside>
-                      </div>
-                      <br>
-                      <button class="btn btn-primary" type="submit">Save changes</button>
-                    </form>
-                    <hr class="my-5">
-                    <div class="row" style="max-width:920px">
-                      <div class="col-md">
-                        <article class="box mb-3 bg-light">
-                          <button class="btn float-end btn-light btn-sm rounded font-md" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">Change</button>
-                          <h6>Password</h6>
-                          <small class="text-muted d-block" style="width:70%">You can reset or change your password by
-                            clicking here</small>
-                        </article>
-                      </div>
-                      <div class="col-md">
-                        <article class="box m-3 bg-light d-flex">
-                          <h5>Wallet </h5> : <h5>
-                            <%=userData.walletBalance%>
-                          </h5>
-                        </article>
-                      </div>
-                    </div>
-
-
-                  </section>
+                    </div><!-- .End .tab-pane -->
+                    
+                    <script>
+                        // Add event listener to copy coupon code
+                        document.querySelectorAll('.copy-coupon-btn').forEach(function (button) {
+                            button.addEventListener('click', function () {
+                                const couponCode = this.dataset.coupon;
+                                copyToClipboard(couponCode);
+                            });
+                        });
+                    
+                        // Function to copy text to clipboard
+                        function copyToClipboard(text) {
+                            navigator.clipboard.writeText(text).then(function () {
+                                Swal.fire({
+                                title: 'Copied',
+                                text: 'Coupon code copied',
+                                background: '#ffffff', // Set the background color to white
+                                customClass: {
+                                  popup: 'white-background', // Add a custom class for additional styling
+                                },
+                                icon: 'success',
+                            });}).catch(function (err) {
+                                console.error('Unable to copy to clipboard', err);
+                            });
+                        }
+                    </script>
+                    
+                    
                 </div>
-
-
-
-
-
-              </div>
+            </div><!-- End .col-lg-9 -->
             </div>
           </div>
         </div>

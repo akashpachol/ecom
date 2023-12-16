@@ -4,6 +4,7 @@ const userControler=require('../controller/user/userController')
 const addressControler=require('../controller/user/addressController')
 const cartControler=require('../controller/user/cartController')
 const orderController=require('../controller/user/orderController')
+const couponController=require('../controller/admin/couponController')
 const  { islogin,islogout }=require('../middleware/userAuth')
 
 const multer=require('../middleware/multer')
@@ -61,4 +62,8 @@ userRoute.get('/orderSuccess',orderController.loadOrderDetails );
 userRoute.get('/orderDetails/:id',orderController.loadOrderHistory );
 userRoute.post('/orderCancel',orderController.orderCancel );
 userRoute.post('/return',orderController.returnData );
+
+userRoute.get('/coupons',couponController.userCouponList)
+
+userRoute.post('/applyCoupon',orderController.applyCoupon)
 module.exports=userRoute

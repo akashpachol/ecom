@@ -57,7 +57,7 @@ const loadHome = async (req, res) => {
       { $match: { "items.paymentStatus": "success" } }, // Include the conditions directly
       { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
     ]);
-console.log(totalRevenue,"totalRevenue");
+
     const totalUsers = await User.countDocuments({ is_blocked: 1});
     const totalOrders = await Order.countDocuments();
     const totalProducts = await Product.countDocuments();

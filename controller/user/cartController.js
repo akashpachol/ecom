@@ -164,7 +164,7 @@ const updateCartCount = async (req, res) => {
             0
           );
         }
-
+console.log(existingCart,"existingCart");
         await existingCart.save();
         return res.status(200).json({ success: true, message: 'Cart updated successfully' });
      

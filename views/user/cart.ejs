@@ -142,10 +142,15 @@
                                             </tbody>
                                         </table>
                                     </div>
-                            
-                                        <a href="/checkout" class="btn btn-primary">
+                            <%if (subtotalWithShipping !=0) {%>
+                                
+                                <a href="/checkout" class="btn btn-primary">
                                             <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut
                                         </a>
+                                <%
+                                
+                            } %>
+                                      
                                   
                                    
                                 </div>

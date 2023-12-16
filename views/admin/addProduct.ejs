@@ -164,7 +164,7 @@
       <div class="input-upload">
           <img src="/assetsb/imgs/theme/upload.svg" alt="">
           <div id="imagePreview" class="image-preview"></div>
-          <input required name="image" id="imageInput" class="form-control" type="file" accept="image/*" multiple>
+          <input  name="image" id="imageInput" class="form-control" type="file" accept="image/*" multiple>
       </div>
   </div>
   <script>
@@ -317,9 +317,9 @@
         const description = document.getElementById("description").value;
         const product_price = document.getElementById("product_price").value;
         const discount_price = document.getElementById("discount_price").value;
-        const product_category = document.querySelector('select[name="category"]').value.trim();
-    const product_brand = document.querySelector('select[name="brand"]').value.trim();
-    const product_gender = document.querySelector('select[name="gender"]').value.trim();
+        const product_category = document.querySelector('select[name="category"]').value;
+    const product_brand = document.querySelector('select[name="brand"]').value;
+    const product_gender = document.querySelector('select[name="genderData"]').value;
 
 
    
@@ -358,9 +358,9 @@
         product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
         description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
         product_price_error.innerHTML = isNaN(product_price) || product_price.trim() === "" || parseFloat(product_price) < 0 ? "Please enter a valid price " : "";
-        product_category_error.innerHTML = product_category.trim() === "" ? "Please enter product category" : "";
-        product_brand_error.innerHTML = product_brand.trim() === "" ? "Please enter product brand" : "";
-        gender_error.innerHTML = product_gender.trim() === "" ? "Please enter gender" : "";
+        product_category_error.innerHTML = product_category === '' ? "Please enter product category" : "";
+    product_brand_error.innerHTML = product_brand === '' ? "Please enter product brand" : "";
+    gender_error.innerHTML = product_gender === '' ? "Please enter gender" : "";
         discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
 
 

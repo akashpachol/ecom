@@ -100,7 +100,7 @@ const orderStatusChange = async (req, res) => {
     
   
 
-      return res.status(200).json({ message: "Order status change successfully" });
+      return res.status(200).json({success: true, message: "Order status change successfully" });
    
   
     } catch (error) {

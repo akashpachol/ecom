@@ -26,7 +26,7 @@ const islogout=async(req,res,next)=>{
       const userData = await User.findOne({ _id: req.session.user_id });
         if (req.session.user_id && userData.isAdmin==0  ) {
   
-            res.redirect('/home')
+            res.redirect('/')
 
         } else{
        

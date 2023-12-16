@@ -28,6 +28,10 @@ const Product = new mongoose.Schema({
     type:Number, 
     required:true
   },
+  discountPrice: {
+    type: Number,
+    required: true,
+  },
   discount_price:{
     type:Number, 
     required:true
@@ -54,7 +58,14 @@ const Product = new mongoose.Schema({
   is_listed:{
     type:Boolean,
     default:true
-}
+},
+discountStatus:{
+  type:Boolean,
+  default:false
+},
+discount:Number,
+discountStart:Date,
+discountEnd:Date,
  
 
   

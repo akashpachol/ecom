@@ -1,0 +1,280 @@
+<%- include('../Layout/adminHeader.ejs') %>
+
+
+
+    <form id="offer-form" >
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+
+                    <div class="content-header">
+                        <h2 class="content-title">Add Offer</h2>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mb-4">
+                    <a href="/admin/offerList"><button
+                            class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button></a>
+                    <button type="button" onclick="addCoupon(event)" class="btn btn-md rounded font-sm hover-up">Add
+                        Offer</button>
+
+                </div>
+                <div class="col-lg-12">
+
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label">Name</label>
+                                <input type="text" name="name" placeholder="Type here" class="form-control"
+                                    id="offer_name">
+                                <div class="error-message" style="color: red;" id="offer_name-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="form-group">
+                                    <label class="form-label" for="discountType">Discount Type:</label>
+                                    <select class="form-select" id="discountType" name="discountType">
+                                        <option value="" selected disabled>Select discount type</option>
+                                        <option value="percentage">Percentage</option>
+                                        <option value="fixed Amount">Fixed Amount</option>
+                                    </select>
+                                    <div class="error-message" style="color: red;" id="discountType-error"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label">Discount</label>
+                                <input type="number" name="discountValue" placeholder="Type here" class="form-control"
+                                    id="discount">
+                                <div class="error-message" style="color: red;" id="discount-error"></div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-group">
+                                    <label class="form-label mt-3" for="limit">Maximum Amount</label>
+                                    <input type="number" class="form-control" id="maxAmt" name="maxAmt">
+                                    <div class="error-message" style="color: red;" id="maxAmt-error"></div>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <div class="form-group">
+                                    <label class="form-label mt-3" for="discountOn">Discount On:</label>
+                                    <select class="form-select" id="discountOn" name="discountOn">
+                                        <option value="" selected disabled>Select discount on</option>
+                                        <option value="product">Product</option>
+                                        <option value="category">Category</option>
+                                    </select>
+                                    <div class="error-message" style="color: red;" id="discountOn-error"></div>
+                                </div>
+                            </div>
+
+                            <div id="categorySelect" style="display: none;">
+                                <label class="form-label">Category</label>
+                                <select name="discountedCategory" class="form-select">
+                                    <option value="" selected disabled>Select a category</option>
+                                    <% if (category && category.length> 0) {
+                                        category.forEach(categoryData=> {
+                                        if (categoryData.is_listed) {
+                                        %>
+                                        <option value="<%= categoryData._id %>">
+                                            <%= categoryData.name %>
+                                        </option>
+                                        <% } }); } else { %>
+                                            <option value="" disabled>No products available</option>
+                                            <% } %>
+                                </select>
+                                <br>
+                            </div>
+
+                            <div id="productSelect" style="display: none;">
+                                <label class="form-label" class="form-label">Product</label>
+                                <select name="discountedProduct" class="form-select">
+                                    <option value="" selected disabled>Select a product</option>
+                                    <% if (product && product.length> 0) {
+
+                                        product.forEach(productData=> {
+                                        if (productData.is_listed) {
+                                        %>
+                                        <option value="<%= productData._id %>">
+                                            <%= productData.name %>
+                                        </option>
+                                        <% } }); } else { %>
+                                            <option value="" disabled>No products available</option>
+                                            <% } %>
+                                </select><br>
+                            </div>
+
+                            <!-- Category Div -->
+                            <div class="mb-2">
+                                <label for="category_name" class="form-label">Start Date</label>
+                                <input type="date" name="startDate" placeholder="Type here" class="form-control"
+                                    id="startDate">
+                                <div class="error-message" style="color: red;" id="startDate-error"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="start date" class="form-label">Expiry Date</label>
+                                <input type="date" name="endDate" placeholder="Type here" class="form-control"
+                                    id="expiryDate">
+                                <div class="error-message" style="color: red;" id="expiryDate-error"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="invalid">
+                <% if (typeof message !=='undefined' && message) { %>
+                    <p style="color: red;" id="message">
+                        <%= message %>
+                    </p>
+                    <% } %>
+                                  
+            </div>
+            </div>
+
+        </section>
+    </form>
+    <script>
+        document.getElementById('productSelect').style.display = 'block';
+
+        document.getElementById('discountOn').addEventListener('change', function () {
+            var categorySelect = document.getElementById('categorySelect');
+            var productSelect = document.getElementById('productSelect');
+
+
+            categorySelect.style.display = 'none';
+            productSelect.style.display = 'none';
+
+
+            var selectedOption = this.value;
+            if (selectedOption === 'category') {
+                categorySelect.style.display = 'block';
+            } else if (selectedOption === 'product') {
+                productSelect.style.display = 'block';
+            }
+        });
+    </script>
+
+    <script>
+        function validationChecking(offer_name, discount, discountType, discountOn, maxAmt, expiryDate, startDate) {
+            console.log("Expiry Date:", expiryDate);
+            const offer_name_error = document.getElementById("offer_name-error");
+            const discountType_error = document.getElementById("discountType-error");
+            const discount_error = document.getElementById("discount-error");
+
+            const discountOn_error = document.getElementById("discountOn-error");
+            const maxAmt_error = document.getElementById("maxAmt-error");
+            const startDate_error = document.getElementById("startDate-error");
+            const expiryDate_error = document.getElementById("expiryDate-error");
+
+
+
+            offer_name_error.innerHTML = offer_name.trim() === "" ? "Please enter correct offer name" : "";
+            discount_error.innerHTML = discount.trim() === "" ? "Please enter discount" : /^\d+$/.test(discount) === false ? "Please enter valid discount number" : "";
+            discountType_error.innerHTML = discountType === "" ? "Please select offer type" : "";
+            discountOn_error.innerHTML = discountOn === "" ? "Please select category or product" : "";
+            maxAmt_error.innerHTML = maxAmt.trim() === "" ? "Please enter max amount" : /^\d+$/.test(maxAmt) === false ? "Please enter valid max amount" : "";
+            startDate_error.innerHTML = startDate.trim() === "" ? "Please enter start date" : "";
+
+            expiryDate_error.innerHTML = expiryDate.trim() === "" ? "Please enter expiry date" : "";
+
+
+            return (
+                offer_name_error.innerHTML ||
+                discount_error.innerHTML ||
+                discountType_error.innerHTML ||
+                discountOn_error.innerHTML ||
+                maxAmt_error.innerHTML ||
+                startDate_error.innerHTML ||
+                expiryDate_error.innerHTML
+            );
+        }
+        const addCoupon = () => {
+            const offer_name = document.getElementById("offer_name").value;
+            const discountType = document.querySelector('select[name="discountType"]').value;
+            const discountOn = document.querySelector('select[name="discountOn"]').value;
+            const discountedProduct = document.querySelector('select[name="discountedProduct"]').value;
+            const discountedCategory = document.querySelector('select[name="discountedCategory"]').value;
+            const discount = document.getElementById("discount").value;
+
+            const maxAmt = document.getElementById("maxAmt").value;
+
+            const startDate = document.getElementById("startDate").value;
+            const expiryDate = document.getElementById("expiryDate").value;
+
+            console.log(expiryDate, "expiryDate");
+            const errors = validationChecking(offer_name, discount, discountType, discountOn, maxAmt, expiryDate, startDate);
+
+            console.log("Validation Errors: ", errors);
+
+
+            if (!errors) {
+                const requestData = {
+                    offer_name,
+                    discountValue: discount,
+                    discountType,
+                    discountOn,
+                    maxAmt,
+                    expiryDate,
+                    startDate,
+                    discountedProduct,
+                    discountedCategory,
+                };
+                console.log(requestData,"requestData");
+
+                fetch('/admin/offerAdd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData),
+                })
+                .then(response => response.json())
+                .then(data => {
+console.log(data,"validationChecking");
+                    if (data.success) {
+                        window.location.href = '/admin/offerlist';
+                    } else {
+
+                        alert('Error occurred while adding coupon23');
+                    }
+                })
+                .catch(error => {
+
+                    console.error('Error:', error);
+                    alert('Error occurred adding couponeee');
+                });
+            }
+        }
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <%- include('../Layout/adminFooter.ejs') %>
