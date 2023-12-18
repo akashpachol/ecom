@@ -81,12 +81,12 @@
                     </span>
                   </div>
                   <div class="product-price">
-                    <% if (product.discount_price) { %>
-                    <span>₹<%= product.discount_price %> </span>
+                    <% if (product.discountPrice !=product.price) { %>
+                    <span>₹<%= product.discountPrice %> </span>
                     <span class="old-price">- ₹<s><%= product.price %></s></span>
 
                     <% } else { %>
-                    <span class="old-price"> ₹<%= product.price %></span>
+                    <span > ₹<%= product.price %></span>
                     <% } %>
                   </div>
                                 

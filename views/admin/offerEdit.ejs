@@ -107,7 +107,7 @@
                                         product.forEach(productData=> {
                                         if (productData.is_listed) {
                                         %>
-                                        <option value="<%= productData._id %>" >
+                                        <option value="<%= productData._id %>" <% if( offer.discountedProduct?.name == productData.name ){ %>  selected <%} %>>
                                             <%= productData.name %>
                                         </option>
                                         <% } }); } else { %>
@@ -245,8 +245,8 @@
                     discountedCategory,
                 };
                 console.log(requestData,"requestData");
-
-                fetch('/admin/offerEdit', {
+                const couponId = "<%= offer._id %>"; 
+                fetch(`/admin/offerEdit?id=${couponId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

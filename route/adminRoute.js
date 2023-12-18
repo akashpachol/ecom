@@ -74,6 +74,7 @@ adminRoute.post("/offerAdd",offerController.addOffer );
 adminRoute.get("/offerlist", adminAuth.isLogin,offerController.OfferList );
 adminRoute.get("/offerEdit", adminAuth.isLogin,offerController.loadOfferEdit );
 adminRoute.put("/offerEdit", adminAuth.isLogin,offerController.editOffer );
+adminRoute.get("/blockOffer", adminAuth.isLogin,offerController.offerBlock );
 
 // banner
 adminRoute.get("/bannerAdd", adminAuth.isLogin, bannerController.loadBannerAdd);

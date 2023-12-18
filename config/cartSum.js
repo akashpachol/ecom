@@ -6,7 +6,7 @@ const calculateSubtotal = (cart) => {
     let subtotal = 0;
     for (const cartItem of cart) {
  
-      subtotal += cartItem.product.discount_price * cartItem.quantity;
+      subtotal += cartItem.product.discountPrice * cartItem.quantity;
     }
     return subtotal;
   };
@@ -14,7 +14,7 @@ const calculateSubtotal = (cart) => {
   const calculateProductTotal = (cart) => {
     const productTotals = [];
     for (const cartItem of cart) {
-      const total = cartItem.product.discount_price * cartItem.quantity;
+      const total = cartItem.product.discountPrice * cartItem.quantity;
       productTotals.push(total);
     }
     return productTotals;
