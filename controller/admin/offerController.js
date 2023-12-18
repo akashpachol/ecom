@@ -56,14 +56,15 @@ console.log("fdfgsjfdsfjhfdgsfdsj");
           maxAmt,
           startDate,
           endDate: expiryDate,
-          discountedProduct,
+          discountedProduct: discountedProduct ? discountedProduct : null,
+          discountedCategory: discountedCategory ? discountedCategory : null,
      
       });
 
- 
+      await newOffer.save();
 
       if (discountedProduct) {
-        newOffer.discountedProduct=discountedProduct;
+   
   
           const discountedProductData = await Product.findById(discountedProduct);
           console.log(discountedProductData);
@@ -92,10 +93,10 @@ console.log("fdfgsjfdsfjhfdgsfdsj");
               }
           );
       } else if (discountedCategory) {
-        newOffer.discountedCategory = discountedCategory;
+     
           const categoryData = await Category.findById(discountedCategory);
 
-          await Category.updateOne(
+    const data=      await Category.updateOne(
               { _id: discountedCategory },
               {
                   $set: {
@@ -109,9 +110,9 @@ console.log("fdfgsjfdsfjhfdgsfdsj");
           );
 
           const discountedProductData = await Product.find({
-              category: categoryData.name,
+              category: categoryData._id,
           });
-
+console.log(discountedProductData,"discountedProductData");
           for (const product of discountedProductData) {
               let discount = 0;
               if (discountType === "percentage") {
@@ -138,10 +139,11 @@ console.log("fdfgsjfdsfjhfdgsfdsj");
           }
       }
 
-      await newOffer.save();
+
 
       return res.status(200).json({ success: true, message: "Offer added successfully" });
   } catch (error) {
+    console.log(error.message);
       return res.status(500).json({ success: false, error: "An error occurred while adding the offer" });
   }
 };
@@ -194,9 +196,266 @@ function calculateDiscountPrice(price, discountType, discountValue) {
     }
   };
   
+// Function to laod offer edit page
+const loadOfferEdit = async (req, res) => {
+  try {
+    const product = await Product.find().sort({ date: -1 });
+    const category = await Category.find().sort({ date: -1 });
+    const offerId = req.query.offerId;
+    const admin = req.session.adminData;
+    const offer = await Offer.findById(offerId)
+      .populate("discountedProduct")
+      .populate("discountedCategory");
+    const startDate = new Date(offer.startDate).toISOString().split("T")[0];
+    const endDate = new Date(offer.endDate).toISOString().split("T")[0];
+    res.render("admin/offerEdit", {
+      admin,
+      offer,
+      product,
+      category,
+      startDate,
+      endDate,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+//Function to Edit Offer
+
+const editOffer = async (req, res) => {
+  try {
+    const admin = req.session.addOffer;
+    const product = await Product.find({});
+    const categoryData = await Category.find({});
+    const {
+      offerId,
+      offer_name,
+      discountValue,
+      discountType,
+      discountOn,
+      maxAmt,
+      expiryDate,
+      startDate,
+      discountedProduct,
+      discountedCategory,
+    } = req.body;
+
+console.log(req.body);
+    const existingOffer = await Offer.findById(offerId);
+
+    if (!existingOffer) {
+      return res.status(400).json({ success: false, error: "Offer not found" });
+  
+    }
+
+    if (offer_name !== existingOffer.offer_name) {
+      const existingNameOffer = await Offer.findOne({ offer_name });
+      if (existingNameOffer) {
+        return res.status(400).json({ success: false, error: "Duplicate Discount Name not allowed." });
+
+    
+      }
+    }
+
+    const categoryChanged =existingOffer.discountedCategory !== discountedCategory?existingOffer.discountedCategory :"";
+    const productChanged =existingOffer.discountedProduct !== discountedProduct;
+
+    if (categoryChanged && existingOffer.discountedCategory) {
+      await Category.updateOne(
+        { _id: existingOffer.discountedCategory },
+        { $set: { discountStatus: false } }
+      );
+        const discountedCategoryData = await Category.findById(existingOffer.discountedCategory);
+      await Product.updateMany(
+        { category: discountedCategoryData.name },
+        { $set: { discountStatus: false } }
+      );
+    }
+
+    if (productChanged && existingOffer.discountedProduct) {
+      await Product.updateOne(
+        { _id: existingOffer.discountedProduct },
+        { $set: { discountStatus: false } }
+      );
+    }
+    console.log("req.bodyreq.bodyreq.bodyreq.body");
+
+    const updatedOffer = await Offer.findByIdAndUpdate(
+      { _id: offerId },
+      {
+          $set: {
+            name: offer_name,
+          discountOn,
+          discountType,
+          discountValue,
+          maxAmt,
+          startDate,
+          endDate: expiryDate,
+          discountedProduct: discountedProduct ? discountedProduct : null,
+          discountedCategory: discountedCategory ? discountedCategory : null,
+          },
+      },
+      { new: true } // To get the updated document
+  );
+
+console.log(updatedOffer,"updatedOffer");
+    if (discountedProduct) {
+      const discountedProductData = await Product.findById(discountedProduct);
+
+      let discount = 0;
+      if (discountType === "percentage") {
+        discount = (discountedProductData.price * discountValue) / 100;
+      } else if (discountType === "fixed Amount") {
+        discount = discountValue;
+      }
+
+      await Product.updateOne(
+        { _id: discountedProduct },
+        {
+          $set: {
+            discountPrice: calculateDiscountPrice(
+              discountedProductData.price,
+              discountType,
+              discountValue
+            ),
+            discount,
+            discountStart: startDate,
+            discountEnd: endDate,
+            discountStatus: true,
+          },
+        }
+      );
+    } else if (discountedCategory) {
+      const categoryData = await Category.findById(discountedCategory);
+
+      await Category.updateOne(
+        { _id: discountedCategory },
+        {
+          $set: {
+            discountType,
+            discountValue,
+            discountStart: startDate,
+            discountEnd: endDate,
+            discountStatus: true,
+          },
+        }
+      );
+
+      const discountedProductData = await Product.find({
+        category: categoryData.name,
+      });
+
+      for (const product of discountedProductData) {
+        let discount = 0;
+        if (discountType === "percentage") {
+          discount = (product.price * discountValue) / 100;
+        } else if (discountType === "fixed Amount") {
+          discount = discountValue;
+        }
+        await Product.updateOne(
+          { _id: product._id },
+          {
+            $set: {
+              discountPrice: calculateDiscountPrice(
+                product.price,
+                discountType,
+                discountValue
+              ),
+              discount,
+              discountStart: startDate,
+              discountEnd: endDate,
+              discountStatus: true,
+            },
+          }
+        );
+      }
+    }
+
+    res.redirect("/admin/offerList");
+  } catch (error) {}
+};
+
+// Function for Offer Block and UnBlock
+
+const offerBlock = async (req, res) => {
+  try {
+    const id = req.query.offerId;
+
+    const offer = await Offer.findById(id);
+
+    offer.isActive = !offer.isActive;
+
+    if (offer.discountedProduct) {
+      const discountedProduct = await Product.findById(offer.discountedProduct);
+      if (offer.isActive == false) {
+        discountedProduct.discountPrice = discountedProduct.price;
+      } else {
+        let discount = 0;
+        if (offer.discountType === "percentage") {
+          discount = (discountedProduct.price * offer.discountValue) / 100;
+        } else if (offer.discountType === "fixed Amount") {
+          discount = offer.discountValue;
+        }
+        discountedProduct.discountPrice = calculateDiscountPrice(
+          discountedProduct.price,
+          offer.discountType,
+          offer.discountValue
+        );
+      }
+
+      if (discountedProduct) {
+        discountedProduct.discountStatus = offer.isActive;
+        await discountedProduct.save();
+      }
+    } else if (offer.discountedCategory) {
+      const discountedCategory = await Category.findById(
+        offer.discountedCategory
+      );
+      const discountedProductData = await Product.find({
+        category: discountedCategory.name,
+      });
+      if (discountedCategory) {
+        discountedCategory.discountStatus = offer.isActive;
+        await discountedCategory.save();
+        const discountedProducts = await Product.updateMany(
+          { category: discountedCategory.name },
+          { $set: { discountStatus: offer.isActive } }
+        );
+      }
+      for (const product of discountedProductData) {
+        if (offer.isActive == false) {
+          product.discountPrice = product.price;
+        } else {
+          let discount = 0;
+          if (offer.discountType === "percentage") {
+            discount = (product.price * offer.discountValue) / 100;
+          } else if (offer.discountType === "fixed Amount") {
+            discount = offer.discountValue;
+          }
+          product.discountPrice = calculateDiscountPrice(
+            product.price,
+            offer.discountType,
+            offer.discountValue
+          );
+        }
+        await product.save();
+      }
+    }
+
+    await offer.save();
+    res.redirect("/admin/offerList");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 
 module.exports={
     loadOfferAdd,
     addOffer,
-    OfferList
+    OfferList,
+    loadOfferEdit,
+    editOffer
 }

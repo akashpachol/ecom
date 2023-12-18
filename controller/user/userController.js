@@ -18,6 +18,7 @@ const securePassword = async (password) => {
 const loadRegister = async (req, res) => {
   try {
     referral = req.query.referralCode;
+    console.log(referral,"referral");
     res.render("user/register",referral);
   } catch (error) {
     console.log(error.message);

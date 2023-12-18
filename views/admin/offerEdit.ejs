@@ -8,13 +8,13 @@
                 <div class="col-9">
 
                     <div class="content-header">
-                        <h2 class="content-title">Add Offer</h2>
+                        <h2 class="content-title">Edit Offer</h2>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mb-4">
                     <a href="/admin/offerList"><button
                             class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button></a>
-                    <button type="button" onclick="addCoupon(event)" class="btn btn-md rounded font-sm hover-up">Add
+                    <button type="button" onclick="addCoupon('<%= offer._id %>')" class="btn btn-md rounded font-sm hover-up">Add
                         Offer</button>
 
                 </div>
@@ -30,24 +30,24 @@
                         <div class="card-body">
                             <div class="mb-4">
                                 <label for="category_name" class="form-label">Name</label>
-                                <input type="text" name="name" placeholder="Type here" class="form-control"
+                                <input type="text" name="name" value="<%= offer.name %>" placeholder="Type here" class="form-control"
                                     id="offer_name">
                                 <div class="error-message" style="color: red;" id="offer_name-error"></div>
                             </div>
                             <div class="mb-4">
                                 <div class="form-group">
                                     <label class="form-label" for="discountType">Discount Type:</label>
-                                    <select class="form-select" id="discountType" name="discountType">
+                                    <select class="form-select"  value="<%= offer.discountType %>" id="discountType" name="discountType">
                                         <option value="" selected disabled>Select discount type</option>
-                                        <option value="percentage">Percentage</option>
-                                        <option value="fixed Amount">Fixed Amount</option>
+                                        <option value="percentage"   <%= offer.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+                                        <option value="fixed Amount"  <%= offer.discountType === 'fixedAmount' ? 'selected' : '' %>>Fixed Amount</option>
                                     </select>
                                     <div class="error-message" style="color: red;" id="discountType-error"></div>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <label for="category_name" class="form-label">Discount</label>
-                                <input type="number" name="discountValue" placeholder="Type here" class="form-control"
+                                <input type="number" value="<%= offer.discountValue %>" name="discountValue" placeholder="Type here" class="form-control"
                                     id="discount">
                                 <div class="error-message" style="color: red;" id="discount-error"></div>
                             </div>
@@ -55,7 +55,7 @@
                             <div class="mb-4">
                                 <div class="form-group">
                                     <label class="form-label mt-3" for="limit">Maximum Amount</label>
-                                    <input type="number" class="form-control" id="maxAmt" name="maxAmt">
+                                    <input type="number"  value="<%= offer.maxAmt %>" class="form-control" id="maxAmt" name="maxAmt">
                                     <div class="error-message" style="color: red;" id="maxAmt-error"></div>
 
                                 </div>
@@ -72,10 +72,9 @@
                             <div class="mb-4">
                                 <div class="form-group">
                                     <label class="form-label mt-3" for="discountOn">Discount On:</label>
-                                    <select class="form-select" id="discountOn" name="discountOn">
-                                        <option value="" selected disabled>Select discount on</option>
-                                        <option value="product">Product</option>
-                                        <option value="category">Category</option>
+                                    <select class="form-control" value="<%= offer.discountOn %>" id="discountOn" name="discountOn" required>
+                                        <option value="product"  <%= offer.discountOn === 'product' ? 'selected' : '' %>>Product</option>
+                                        <option value="category"  <%= offer.discountOn === 'category' ? 'selected' : '' %>>Category</option>
                                     </select>
                                     <div class="error-message" style="color: red;" id="discountOn-error"></div>
                                 </div>
@@ -83,13 +82,13 @@
 
                             <div id="categorySelect" style="display: none;">
                                 <label class="form-label">Category</label>
-                                <select name="discountedCategory" class="form-select">
+                                <select name="discountedCategory"  value="<%= offer.discountedCategory %>" class="form-select">
                                     <option value="" selected disabled>Select a category</option>
                                     <% if (category && category.length> 0) {
                                         category.forEach(categoryData=> {
                                         if (categoryData.is_listed) {
                                         %>
-                                        <option value="<%= categoryData._id %>">
+                                        <option value="<%= categoryData._id %>" <% if( offer.discountedCategory.name == categoryData.name ){ %>  selected <%} %>>
                                             <%= categoryData.name %>
                                         </option>
                                         <% } }); } else { %>
@@ -101,18 +100,18 @@
 
                             <div id="productSelect" style="display: none;">
                                 <label class="form-label" class="form-label">Product</label>
-                                <select name="discountedProduct" class="form-select">
+                                <select name="discountedProduct" value="<%= offer.discountedProduct %>"  class="form-select">
                                     <option value="" selected disabled>Select a product</option>
                                     <% if (product && product.length> 0) {
 
                                         product.forEach(productData=> {
                                         if (productData.is_listed) {
                                         %>
-                                        <option value="<%= productData._id %>">
+                                        <option value="<%= productData._id %>" >
                                             <%= productData.name %>
                                         </option>
                                         <% } }); } else { %>
-                                            <option value="" disabled>No products available</option>
+                                            <option value="" disabled >No products available</option>
                                             <% } %>
                                 </select><br>
                             </div>
@@ -120,14 +119,14 @@
                             <!-- Category Div -->
                             <div class="mb-2">
                                 <label for="category_name" class="form-label">Start Date</label>
-                                <input type="date" name="startDate" placeholder="Type here" class="form-control"
+                                <input type="date" name="startDate" value="<%= startDate %>" placeholder="Type here" class="form-control"
                                     id="startDate" min="<%= new Date().toISOString().split('T')[0] %>">
                                 <div class="error-message" style="color: red;" id="startDate-error"></div>
                             </div>
 
                             <div class="mb-2">
                                 <label for="start date" class="form-label">Expiry Date</label>
-                                <input type="date" name="endDate" placeholder="Type here" class="form-control"
+                                <input type="date" name="endDate" value="<%= endDate %>" placeholder="Type here" class="form-control"
                                     id="expiryDate">
                                 <div class="error-message" style="color: red;" id="expiryDate-error"></div>
                             </div>
@@ -213,7 +212,7 @@
                 expiryDate_error.innerHTML
             );
         }
-        const addCoupon = () => {
+        const addCoupon = (id) => {
             const offer_name = document.getElementById("offer_name").value;
             const discountType = document.querySelector('select[name="discountType"]').value;
             const discountOn = document.querySelector('select[name="discountOn"]').value;
@@ -234,6 +233,7 @@
 
             if (!errors) {
                 const requestData = {
+                    offerId:id,
                     offer_name,
                     discountValue: discount,
                     discountType,
@@ -246,8 +246,8 @@
                 };
                 console.log(requestData,"requestData");
 
-                fetch('/admin/offerAdd', {
-                    method: 'POST',
+                fetch('/admin/offerEdit', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
