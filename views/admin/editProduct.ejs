@@ -334,7 +334,7 @@ function validationChecking() {
     const product_title = document.getElementById("product_title").value.trim();
     const description = document.getElementById("description").value.trim();
     const product_price = parseFloat(document.getElementById("product_price").value);
-    const discount_price = parseFloat(document.getElementById("discount_price").value);
+
     const product_category = document.querySelector('select[name="category"]').value.trim();
     const product_brand = document.querySelector('select[name="brand"]').value.trim();
     const product_gender = document.querySelector('select[name="genderData"]').value.trim();
@@ -346,7 +346,7 @@ function validationChecking() {
     const product_category_error = document.getElementById("product_category-error");
     const product_brand_error = document.getElementById("product_brand-error");
     const gender_error = document.getElementById("gender-error");
-    const discount_price_error = document.getElementById("discount_price-error");
+  
 
     let formIsValid = true;
 
@@ -391,16 +391,7 @@ function validationChecking() {
         gender_error.innerHTML = "";
     }
 
-    if (isNaN(discount_price) || discount_price < 1 || discount_price >= product_price) {
-        if (isNaN(discount_price) || discount_price < 1) {
-            discount_price_error.innerHTML = "Please enter a valid discount";
-        } else if (discount_price >= product_price) {
-            discount_price_error.innerHTML = "Discount cannot be equal or greater than product price";
-        }
-        formIsValid = false;
-    } else {
-        discount_price_error.innerHTML = "";
-    }
+
     if (imageInput.files.length === 0) {
             imageError.innerHTML = "Please upload at least one image";
             formIsValid = false;

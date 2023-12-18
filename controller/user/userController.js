@@ -302,11 +302,13 @@ const loadHome = async (req, res) => {
     const userId = req.session.user_id;
 
     const userData = await User.findById(userId);
-  
+    const productData = await Product.find();
+    const categories = await Category.find();
+    const brands = await Brand.find();
     if (userData) {
-      res.render("user/home", { userData });
+      res.render("user/home", { products: productData, userData, categories,brands });
     } else {
-      res.render("user/home", { userData: null });
+      res.render("user/home", { userData: null,products: productData, categories,brands  });
     }
   } catch (error) {
     console.log(error.message);
@@ -362,8 +364,9 @@ const loadSingleShop = async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     const categories = await Category.find();
+    const brands = await Brand.find();
 
-    res.render("user/singleProduct", { userData, product, categories });
+    res.render("user/singleProduct", { userData, product, categories,brands });
   } catch (error) {
     console.log(error.message);
   }

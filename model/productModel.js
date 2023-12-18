@@ -30,12 +30,9 @@ const Product = new mongoose.Schema({
   },
   discountPrice: {
     type: Number,
-    required: true,
+  
   },
-  discount_price:{
-    type:Number, 
-    required:true
-  },
+
 
   sizes: [
     {

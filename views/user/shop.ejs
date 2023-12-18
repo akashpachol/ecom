@@ -38,7 +38,7 @@
         
         <div class="col-lg-9">
 
-          <div class="row product-grid-3">
+          <div class="row product-grid-3"   id="productGrid">
             <% for (let product of products) { 
       
               const categoryId =
@@ -81,7 +81,7 @@
                     </span>
                   </div>
                   <div class="product-price">
-                    <% if (product.discountPrice !=product.price) { %>
+                    <% if (product.discountPrice && product.discountPrice !=product.price) { %>
                     <span>₹<%= product.discountPrice %> </span>
                     <span class="old-price">- ₹<s><%= product.price %></s></span>
 
@@ -112,8 +112,6 @@
           </div>
         <%
           }
-      
-      
       }); %>
       </div>
       <div class="modal-footer">
@@ -236,28 +234,24 @@
     }
   }
 
-
   document.addEventListener("DOMContentLoaded", function () {
-  const searchInput = document.getElementById("searchInput");
-  const productGrid = document.querySelector(".product-grid-3");
-  const productItems = productGrid.getElementsByClassName("product-cart-wrap");
+    const searchInput = document.getElementById("searchInput");
+    const productGrid = document.getElementById("productGrid");
+    const products = productGrid.getElementsByClassName("col-lg-4"); // Assuming each card is within a div with class "col-lg-4"
 
-  searchInput.addEventListener("keyup", function () {
-    const searchText = searchInput.value.toLowerCase();
+    searchInput.addEventListener("input", function () {
+        const searchText = searchInput.value.toLowerCase();
 
-    for (let i = 0; i < productItems.length; i++) {
-      const productName = productItems[i]
-        .getElementsByClassName("product-content-wrap")[0]
-        .getElementsByTagName("h2")[0]
-        .textContent.toLowerCase();
+        for (let i = 0; i < products.length; i++) {
+            const productName = products[i].querySelector("h2 a").textContent.toLowerCase();
 
-      if (productName.includes(searchText)) {
-        productItems[i].style.display = "";
-      } else {
-        productItems[i].style.display = "none";
-      }
-    }
-  });
+            if (!searchText || productName.includes(searchText)) {
+                products[i].style.display = "";
+            } else {
+                products[i].style.display = "none";
+            }
+        }
+    });
 });
 </script>
 <%- include('../Layout/UserFooter.ejs') %>

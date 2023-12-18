@@ -64,7 +64,7 @@ const addProduct = async (req, res) => {
       name,
       category,
       price,
-      discount_price,
+    
       productColor,
       genderData,
       brand,
@@ -90,7 +90,7 @@ const addProduct = async (req, res) => {
       category,
       price,
       productColor,
-      discount_price,
+ 
       gender: genderData,
       brand,
       description,
@@ -101,7 +101,7 @@ const addProduct = async (req, res) => {
     await addProducts.save();
     res.redirect("/admin/products");
   } catch (error) {
-
+console.log(error.message);
     res.status(500).send("Error while adding product");
   }
 };
@@ -164,7 +164,7 @@ const storeEditProduct = async (req, res) => {
       name,
       category,
       price,
-      discoutPrice,
+    
       productColor,
       genderData,
       brand,
@@ -224,7 +224,7 @@ const storeEditProduct = async (req, res) => {
           name,
           category,
           price,
-          discount_price: discoutPrice,
+      
           productColor,
           gender: genderData,
           brand,

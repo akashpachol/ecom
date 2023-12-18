@@ -122,7 +122,20 @@
                                         </h2>
                                         <div class="product-detail-rating">
                                             <div class="pro-details-brand">
-                                                <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                                <span> Brands: <a href="#"> 
+                                                    
+                                                    <% const brandId=product.brand %>
+
+                                                    <% brands.forEach(brand=> { %>
+                                                      <% if (brandId.toString()===brand._id.toString()) { %>
+                                                        <span>
+                                                          <%= brand.name %>
+                                                        </span>
+                                                        <% } %>
+                                                          <% }); %>
+                                                 
+                                                
+                                                </a></span>
                                             </div>
                                             <div class="product-rate-cover text-end">
                                                 <div class="product-rate d-inline-block">
@@ -135,7 +148,7 @@
                                         <div class="clearfix product-price-cover">
                                             
                                             <div class="product-price primary-color float-left">
-                                                <% if (product.discountPrice !=product.price) { %>
+                                                <% if (product.discountPrice && product.discountPrice !=product.price) { %>
                                                   
 
                                                     <ins><span class="text-brand">₹<%= product.discountPrice %>
@@ -153,10 +166,7 @@
                                         </div>
                                         <div class="bt-1 border-color-1 mt-15 mb-15"></div>
                                         <div class="short-desc mb-30">
-                                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem
-                                                officia, corrupti reiciendis minima nisi modi, quasi, odio minus dolore
-                                                impedit fuga eum eligendi? Officia doloremque facere quia. Voluptatum,
-                                                accusantium!</p>
+                                            <p>  <%= product.description %></p>
                                         </div>
                                         <div class="product_sort_info font-xs mb-30">
                                             <ul>

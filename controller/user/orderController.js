@@ -78,7 +78,7 @@ const razorpayOrder = async (req, res) => {
     const cartItems = cart.items || [];
     let totalAmount = 0;
     totalAmount = cartItems.reduce(
-      (acc, item) => acc + (item.product.discount_price * item.quantity || 0),
+      (acc, item) => acc + (item.product.discountPrice? item.product.discountPrice * item.quantity:item.product.price * item.quantity || 0),
       0
     );
 
@@ -159,7 +159,7 @@ const checkOutPost = async (req, res) => {
     }
 
     let totalAmount = cartItems.reduce(
-      (acc, item) => acc + (item.product.discount_price * item.quantity || 0),
+      (acc, item) => acc + (item.product.discountPrice * item.quantity || 0),
       0
     );
     
@@ -200,7 +200,7 @@ const checkOutPost = async (req, res) => {
             product: cartItem.product._id,
             quantity: cartItem.quantity,
             size: cartItem.size,
-            price: cartItem.product.discount_price,
+            price: cartItem.product.discountPrice?cartItem.product.discountPrice:cartItem.product.price,
             status: "Confirmed",
             paymentMethod: paymentMethod,
             paymentStatus: "success",
@@ -229,9 +229,9 @@ const checkOutPost = async (req, res) => {
           quantity: cartItem.quantity,
           size: cartItem.size,
        
-          price: cartItem.product.discount_price,
+          price: cartItem.product.discountPrice?cartItem.product.discountPrice:cartItem.product.price,
           status: "Confirmed",
-          paymentMethod: paymentMethod,
+          paymentMethod: "Online Payment",
           paymentStatus: "success",
         })),
       });
@@ -250,7 +250,7 @@ const checkOutPost = async (req, res) => {
           quantity: cartItem.quantity,
           size: cartItem.size,
      
-          price: cartItem.product.discount_price,
+          price: cartItem.product.discountPrice?cartItem.product.discountPrice:cartItem.product.price,
           status: "Confirmed",
           paymentMethod: paymentMethod,
           paymentStatus: "Pending",

@@ -101,12 +101,7 @@
                                         placeholder="enter the price" id="product_price">
                                     <div class="error-message" style="color: red;" id="product_price-error"></div>
                                 </div>
-                                <div class="col-md-4">
-            <label for="discount_price">Discount Price:</label>
-            <input type="text" name="discount_price" placeholder="Type here" class="form-control" id="discount_price">
-            <div class="error-message" style="color: red;" id="discount_price-error"></div>
-            </div>
-
+     
     
                                 <div class="col-md-4 mb-3">
                                     <label for="inputAddress2" class="form-label" id="gender">gender</label>
@@ -316,7 +311,7 @@
         const product_title = document.getElementById("product_title").value;
         const description = document.getElementById("description").value;
         const product_price = document.getElementById("product_price").value;
-        const discount_price = document.getElementById("discount_price").value;
+
         const product_category = document.querySelector('select[name="category"]').value;
     const product_brand = document.querySelector('select[name="brand"]').value;
     const product_gender = document.querySelector('select[name="genderData"]').value;
@@ -353,7 +348,7 @@
         const product_category_error = document.getElementById("product_category-error");
         const product_brand_error = document.getElementById("product_brand-error");
         const gender_error = document.getElementById("gender-error");
-        const discount_price_error = document.getElementById("discount_price-error");
+
 
         product_title_error.innerHTML = product_title.trim() === "" ? "Please enter product name" : "";
         description_error.innerHTML = description.trim() === "" ? "Please enter product description" : "";
@@ -361,7 +356,7 @@
         product_category_error.innerHTML = product_category === '' ? "Please enter product category" : "";
     product_brand_error.innerHTML = product_brand === '' ? "Please enter product brand" : "";
     gender_error.innerHTML = product_gender === '' ? "Please enter gender" : "";
-        discount_price_error.innerHTML = isNaN(discount_price) || discount_price.trim() === "" || parseFloat(discount_price) < 0 ? "Please enter a valid discount price " : "";
+    
 
 
        

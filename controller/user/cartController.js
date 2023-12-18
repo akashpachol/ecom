@@ -73,11 +73,11 @@ const addTocart = async (req, res) => {
   try {
     const userId = req.session.user_id;
     const product_Id = req.body.productData_id;
-
+console.log(product_Id,"productData_id");
     const { qty, size  } = req.body;
 
     const existingCart = await Cart.findOne({ user: userId }).populate("items.product");
-
+console.log(existingCart,"existingCart");
     const productToUpdate = await Product.findById(product_Id);
 
     if (productToUpdate) {
