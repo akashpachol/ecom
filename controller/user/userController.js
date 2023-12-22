@@ -297,6 +297,64 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const loadWallets = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+
+    const userData = await User.findById(userId);
+    if (!userData) {
+      return res.render("user/login", { userData: null });
+    }
+
+    const walletData = await Wallet.findOne({ user: userId });
+    const {transaction,walletBalance} = walletData
+    console.log(walletData, "transaction");
+    // console.log(transaction, "transaction"+walletBalance);
+    if (!walletData) {
+   
+      return res.render("user/wallets", { userData, wallet: null });
+    }
+
+    res.render("user/wallets", { userData, wallet: walletData });
+  } catch (err) {
+  
+    console.error("Error in loadWallets route:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+const loadAbout = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+
+    const userData = await User.findById(userId);
+  
+    if (userData) {
+      res.render("user/about", {  userData,  });
+    } else {
+      res.render("user/about", { userData: null,  });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+const loadContact = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+
+    const userData = await User.findById(userId);
+  
+    if (userData) {
+      res.render("user/contact", {  userData,  });
+    } else {
+      res.render("user/contact", { userData: null,  });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 const loadHome = async (req, res) => {
   try {
     const userId = req.session.user_id;
@@ -356,19 +414,38 @@ const loadShopBrand = async (req, res) => {
   }
 };
 
-
 const loadSingleShop = async (req, res) => {
   try {
     const userId = req.session.user_id;
     const userData = await User.findById(userId);
+
+    if (!userData) {
+      return res.status(404).send("User not found");
+    }
+
     const productId = req.params.id;
     const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
     const categories = await Category.find();
+
+    if (!categories || categories.length === 0) {
+      return res.status(404).send("Categories not found");
+    }
+
     const brands = await Brand.find();
 
-    res.render("user/singleProduct", { userData, product, categories,brands });
+    if (!brands || brands.length === 0) {
+      return res.status(404).send("Brands not found");
+    }
+
+    res.render("user/singleProduct", { userData, product, categories, brands });
   } catch (error) {
     console.log(error.message);
+    return res.status(404).render("layout/404Error", { userData: null });
   }
 };
 
@@ -383,6 +460,7 @@ const loadprofile = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
+    
   }
 };
 
@@ -456,5 +534,8 @@ module.exports = {
   loadprofile,
   userEdit,
   loadShopCategory,
-  loadShopBrand
+  loadShopBrand,
+  loadWallets,
+  loadAbout,
+  loadContact
 };

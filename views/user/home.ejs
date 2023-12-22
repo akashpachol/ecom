@@ -11,7 +11,7 @@
                                     <h2 class="animated fw-900">Supper value deals</h2>
                                     <h1 class="animated fw-900 text-brand">On all products</h1>
                                     <p class="animated">Save more with coupons & up to 70% off</p>
-                                    <a class="animated btn btn-brush btn-brush-3" href="shop-product-right.html"> Shop Now </a>
+                                    <a class="animated btn btn-brush btn-brush-3" href="/shop"> Shop Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -31,7 +31,7 @@
                                     <h2 class="animated fw-900">Fashion Trending</h2>
                                     <h1 class="animated fw-900 text-7">Great Collection</h1>
                                     <p class="animated">Save more with coupons & up to 20% off</p>
-                                    <a class="animated btn btn-brush btn-brush-2" href="shop-product-right.html"> Discover Now </a>
+                                    <a class="animated btn btn-brush btn-brush-2" href="/shop"> Discover Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -51,7 +51,7 @@
                                     <h2 class="animated fw-900">Big Deals From</h2>
                                     <h1 class="animated fw-900 text-8">Manufacturer</h1>
                                     <p class="animated">Clothing, Shoes, Bags, Wallets...</p>
-                                    <a class="animated btn btn-brush btn-brush-1" href="shop-product-right.html"> Shop Now </a>
+                                    <a class="animated btn btn-brush btn-brush-1" href="/shop"> Shop Now </a>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
@@ -118,9 +118,9 @@
                         <!-- <li class="nav-item" role="presentation">
                             <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Popular</button>
                         </li> -->
-                        <li class="nav-item" role="presentation">
+                        <!-- <li class="nav-item" role="presentation">
                             <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab" data-bs-target="#tab-three" type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
                 <!--End nav-tabs-->
@@ -169,18 +169,23 @@
                   <h2><a href="/singleProduct/<%= product._id%>"><%= product.name %></a></h2>
                   <div class="rating-result" title="90%">
                     <span>
-                      <span>90%</span>
+                        <span>
+                      <%if(product.discountStatus==true &&new Date() <= new Date(product.discountEnd)  ){%>
+                                                    <% const percentageOff = ((product.price - product.discountPrice) / product.price) * 100; %>
+                                                    <span style="font-size: 16px; background-color: rgb(255, 255, 255); border-radius: 2px; padding: 5px 10px 5px 10px;" class="old-price ml-3 text-success">- <%= percentageOff.toFixed(2) %>% OFF</span>
+                                                <%}%>
+                   
+                    </span>
                     </span>
                   </div>
                   <div class="product-price">
-                    <% if (product.discountPrice && product.discountPrice !=product.price) { %>
-                    <span>₹<%= product.discountPrice %> </span>
-                    <span class="old-price">- ₹<s><%= product.price %></s></span>
-
-                    <% } else { %>
-                    <span > ₹<%= product.price %></span>
-                    <% } %>
-                  </div>
+        <% if (product.discountStatus && new Date() <= new Date(product.discountEnd) ) { %>
+          <span>₹<%= product.discountPrice %> </span>
+          <span class="old-price">- ₹<s><%= product.price %></s></span>
+        <% } else { %>
+          <span> ₹<%= product.price %></span>
+        <% } %>
+      </div>
                                 
     <div class="product-action-1 show">
 

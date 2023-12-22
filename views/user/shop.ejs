@@ -77,18 +77,21 @@
                   <h2><a href="/singleProduct/<%= product._id%>"><%= product.name %></a></h2>
                   <div class="rating-result" title="90%">
                     <span>
-                      <span>90%</span>
+                      <%if(product.discountStatus==true &&new Date() <= new Date(product.discountEnd)  ){%>
+                                                    <% const percentageOff = ((product.price - product.discountPrice) / product.price) * 100; %>
+                                                    <span style="font-size: 16px; background-color: rgb(255, 255, 255); border-radius: 2px; padding: 5px 10px 5px 10px;" class="old-price ml-3 text-success">- <%= percentageOff.toFixed(2) %>% OFF</span>
+                                                <%}%>
+                   
                     </span>
                   </div>
                   <div class="product-price">
-                    <% if (product.discountPrice && product.discountPrice !=product.price) { %>
-                    <span>₹<%= product.discountPrice %> </span>
-                    <span class="old-price">- ₹<s><%= product.price %></s></span>
-
-                    <% } else { %>
-                    <span > ₹<%= product.price %></span>
-                    <% } %>
-                  </div>
+        <% if (product.discountStatus && new Date() <= new Date(product.discountEnd) ) { %>
+          <span>₹<%= product.discountPrice %> </span>
+          <span class="old-price">- ₹<s><%= product.price %></s></span>
+        <% } else { %>
+          <span> ₹<%= product.price %></span>
+        <% } %>
+      </div>
                                 
     <div class="product-action-1 show">
 
@@ -134,7 +137,7 @@
 
           </div>
   
-       
+         
         </div>
         <div class="col-lg-3 primary-sidebar sticky-sidebar">
           <div class="row">

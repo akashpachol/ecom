@@ -45,7 +45,8 @@ const listOrderDetails=async(req,res)=>{
             model: "Product",
           })
      console.log(order,"order");
-      res.render("admin/orderDetails", { order });
+     let orderData=order
+      res.render("admin/orderDetails", { order:orderData });
         } catch (error) {
           console.log(error.message);
         }
@@ -130,13 +131,13 @@ const loadSalesReport = async (req, res) => {
             query.orderDate = dateFun.getYearlyDateRange();
           }
           else if (req.query.status === "All") {
-            query["items.paymentStatus"] = "success";
+            query["items.status"] = "Delivered";
           }
         }
-  query["items.paymentStatus"] = "success";
+  query["items.status"] = "Delivered";
 
   try {
-    const orders = await Order.find(query)
+    const orders = await Order.find(query).sort({ orderDate: -1 } )
       .populate("user")
       .populate({
         path: "address",
@@ -172,29 +173,11 @@ const loadSalesReport = async (req, res) => {
 };
 
 
-  const downloadPdf=()=>{
-    const pdfPath = path.join(__dirname, 'path/to/your/pdf.pdf');
-
-    // Read the PDF file
-    fs.readFile(pdfPath, (err, data) => {
-      if (err) {
-        res.status(500).send('Error occurred while reading the PDF file.');
-      } else {
-        // Set headers to trigger a download prompt
-        res.setHeader('Content-Disposition', 'attachment; filename="your_pdf_file.pdf"');
-        res.setHeader('Content-Type', 'application/pdf');
-  
-        // Send the file as a response
-        res.status(200).json({ success: true, data, message: "download sucessfully" });
-      }
-    });
-  }
-
   
   module.exports={
     listUserOrders,
     listOrderDetails,
     orderStatusChange,
     loadSalesReport,
-    downloadPdf
+  
   }

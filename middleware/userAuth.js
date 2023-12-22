@@ -39,6 +39,11 @@ const islogout=async(req,res,next)=>{
     }
 }
 
+const error=((req, res, next) => {
+  res.render("./layout/404Error", { userData: null });
+  next()
+});
+
 module.exports={
     islogin,
     islogout,

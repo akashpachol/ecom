@@ -2,24 +2,36 @@
 
 
 const calculateSubtotal = (cart) => {
+  let subtotal = 0;
+  for (const cartItem of cart) {
+    const isDiscounted = cartItem.product.discountStatus &&
+    new Date(cartItem.product.discountStart) <= new Date() &&
+    new Date(cartItem.product.discountEnd) >= new Date();
 
-    let subtotal = 0;
-    for (const cartItem of cart) {
- 
-      subtotal +=cartItem.product.discountPrice? cartItem.product.discountPrice * cartItem.quantity:cartItem.product.price * cartItem.quantity;
-    }
-    return subtotal;
-  };
+const priceToConsider = isDiscounted ? cartItem.product.discountPrice : cartItem.product.price;
+
+  subtotal += priceToConsider * cartItem.quantity;
+}
+  return subtotal;
+};
   
-  const calculateProductTotal = (cart) => {
-    const productTotals = [];
-    for (const cartItem of cart) {
-      const total = cartItem.product.discountPrice? cartItem.product.discountPrice * cartItem.quantity:cartItem.product.price * cartItem.quantity;
-      productTotals.push(total);
-    }
-    return productTotals;
-  };
 
+const calculateProductTotal = (cart) => {
+  const productTotals = [];
+  for (const cartItem of cart) {
+    const isDiscounted = cartItem.product.discountStatus &&
+    new Date(cartItem.product.discountStart) <= new Date() &&
+    new Date(cartItem.product.discountEnd) >= new Date();
+
+const priceToConsider = isDiscounted ? cartItem.product.discountPrice : cartItem.product.price;
+
+const total = priceToConsider * cartItem.quantity; 
+
+console.log(total);
+productTotals.push(total);
+  }
+  return productTotals;
+};
 
 
   function calculateDiscountedTotal(total, discountPercentage) {

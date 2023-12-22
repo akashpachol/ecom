@@ -329,7 +329,7 @@ const editOffer = async (req, res) => {
 
     if (discountedProduct) {
       const discountedProductData = await Product.findById(discountedProduct);
-console.log(discountedProduct,"discountedProduct");
+
       let discount = 0;
       if (discountType === "percentage") {
         discount = (discountedProductData.price * discountValue) / 100;

@@ -54,7 +54,7 @@ const loadHome = async (req, res) => {
     const adminData = await User.findById(req.session.admin_id);
    
     const totalRevenue = await Order.aggregate([
-      { $match: { "items.paymentStatus": "success" } }, // Include the conditions directly
+      { $match: {    "items.status": "Delivered"  } }, // Include the conditions directly
       { $group: { _id: null, totalAmount: { $sum: "$totalAmount" } } },
     ]);
 
@@ -67,7 +67,7 @@ const loadHome = async (req, res) => {
     const monthlyEarnings = await Order.aggregate([
       {
         $match: {
-          "items.paymentStatus": "success" ,
+          "items.status": "Delivered" ,
           orderDate: {
             $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
           },

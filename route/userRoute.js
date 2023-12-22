@@ -16,11 +16,12 @@ userRoute.get('/otp',userControler.loadOtp );
 userRoute.post('/otp',userControler.verifyOtp );
 userRoute.get('/resendOTP',userControler.resendOTP );
 userRoute.get('/logout',islogin,userControler.userLogout );
+userRoute.get('/Wallets',islogin,userControler.loadWallets );
 
 
 // user
 userRoute.get('/userprofile',userControler.loadprofile );
-userRoute.post('/userprofile',multer.uploadUser.single('image'), userControler.userEdit );
+userRoute.post('/userprofile',multer.uploadUser.single('coverimage'), userControler.userEdit );
 userRoute.get('/userAddress',addressControler.loadAddress );
 userRoute.get('/addAddress',addressControler.loadAddAddress );
 userRoute.post('/addAddress',addressControler.addAddress );
@@ -42,28 +43,31 @@ userRoute.post('/changePassword',userControler.resetPassword );
 
 // home
 userRoute.get('/',userControler.loadHome );
-userRoute.get('/shop',userControler.loadShop );
-userRoute.get('/singleProduct/:id',userControler.loadSingleShop );
-userRoute.get('/shopCategoryFilter',userControler.loadShopCategory );
+userRoute.get('/about',islogin,userControler.loadAbout );
+userRoute.get('/contact',islogin,userControler.loadContact );
+userRoute.get('/shop',islogin,userControler.loadShop );
+userRoute.get('/singleProduct/:id',islogin,userControler.loadSingleShop );
+userRoute.get('/shopCategoryFilter',islogin,userControler.loadShopCategory );
 userRoute.get('/shopBrandFilter',userControler.loadShopBrand );
 
 
 // Cart
-userRoute.get('/cart',cartControler.loadCartPage );
-userRoute.post('/cart',cartControler.addTocart );
-userRoute.put("/updateCart", cartControler.updateCartCount);
-userRoute.delete("/removeCartItem", cartControler.removeFromCart);
+userRoute.get('/cart',islogin,cartControler.loadCartPage );
+userRoute.post('/cart',islogin,cartControler.addTocart );
+userRoute.put("/updateCart",islogin, cartControler.updateCartCount);
+userRoute.delete("/removeCartItem",islogin, cartControler.removeFromCart);
 
 // order
-userRoute.get('/checkout',orderController.loadCheckout );
-userRoute.post('/checkout',orderController.checkOutPost );
-userRoute.post('/razorpayOrder',orderController.razorpayOrder );
-userRoute.get('/orderSuccess',orderController.loadOrderDetails );
-userRoute.get('/orderDetails/:id',orderController.loadOrderHistory );
-userRoute.post('/orderCancel',orderController.orderCancel );
-userRoute.post('/return',orderController.returnData );
+userRoute.get('/checkout',islogin,orderController.loadCheckout );
+userRoute.post('/checkout',islogin,orderController.checkOutPost );
+userRoute.post('/razorpayOrder',islogin,orderController.razorpayOrder );
+userRoute.get('/orderSuccess',islogin,orderController.loadOrderDetails );
+userRoute.get('/orderDetails/:id',islogin,orderController.loadOrderHistory );
+userRoute.post('/orderCancel',islogin,orderController.orderCancel );
+userRoute.post('/return',islogin,orderController.returnData );
 
-userRoute.get('/coupons',couponController.userCouponList)
+userRoute.get('/coupons',islogin,couponController.userCouponList)
 
-userRoute.post('/applyCoupon',orderController.applyCoupon)
+userRoute.post('/applyCoupon',islogin,orderController.applyCoupon)
+
 module.exports=userRoute

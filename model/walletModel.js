@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 
-const transaction= new mongoose.Schema({
+const transactionSchema= new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
@@ -25,7 +25,7 @@ const wallet = new mongoose.Schema({
     required: true,
   },
 
-  transaction:[transaction],
+  transaction:[transactionSchema],
   walletBalance: {
     type: Number,
     default: 0,

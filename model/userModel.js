@@ -34,7 +34,10 @@ is_blocked:{
     type:Number,
     default:1,
 },
-
+walletBalance: {
+    type: Number,
+    default: 0,
+  },
 referralCode: {
     type: String,
     default: RandomReferralCode,

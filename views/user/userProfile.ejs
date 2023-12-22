@@ -30,7 +30,9 @@
                     <li class="nav-item">
                       <a class="nav-link" href="/orderSuccess"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                     </li>
-
+                    <li class="nav-item">
+                      <a class="nav-link" href="/Wallets"><i class="fi-rs-shopping-bag mr-10"></i>Wallets</a>
+                    </li>
                     <li class="nav-item">
                       <a class="nav-link"  href="/coupons" ><i class="fi-rs-shopping-bag mr-10"></i>coupon</a>
                     </li>
@@ -61,7 +63,7 @@
 
                             <div class="col-lg-12  mb-3">
                               <label class="form-label">Email</label>
-                              <input class="form-control" type="email" name="email" value="<%=userData.password%>"
+                              <input class="form-control" type="email" name="email" value="<%=userData.email%>"
                                 id="user_email" placeholder="example@mail.com" disabled>
                               <div id="errorMail" class="ms-2 text-danger"></div>
                             </div>
@@ -76,6 +78,7 @@
 
                           </div>
                         </div>
+                        
                         <aside class="col-lg-4">
                           <figure class="text-lg-center">
                             <% if (userData.image) { %><img class="img-lg mb-3 img-avatar" id="previewImage"
@@ -84,14 +87,19 @@
                                   src="assets/imgs/people/avatar1.jpg" alt="User Photo">
                                 <% } %>
                                   <figcaption>
-                                    <label for="fileUpload" class="btn btn-light rounded font-md">
+                                    <label for="fileUpload" class="btn btn-light rounded font-md"  id="saveposter">
                                       <i class="icons material-icons md-backup font-md"></i> Upload
                                     </label>
-                                    <input type="file" name="image" id="fileUpload" style="display: none;">
+                                    <input type="file" name="coverimage" id="fileUpload" accept="image/*" style="display: none;">
+                             
                                     <div id="errorfileUpload" class="ms-2 text-danger"></div>
+
                                   </figcaption>
                           </figure>
                         </aside>
+
+
+                        
                       </div>
                       <br>
                       <button class="btn btn-primary" type="submit">Save changes</button>
@@ -109,8 +117,8 @@
                       </div>
                       <div class="col-md">
                         <article class="box m-3 bg-light d-flex">
-                          <h5>Wallet </h5> : <h5>
-                            <%=userData.walletBalance%>
+                          <h5>referral Code </h5> : <h5>
+                            <%=userData.referralCode%>
                           </h5>
                         </article>
                       </div>
@@ -161,8 +169,9 @@
       </div>
     </section>
   </main>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <script>
+
     document.getElementById('fileUpload').addEventListener('change', function (event) {
       const file = event.target.files[0];
       if (file) {
@@ -265,7 +274,6 @@
 
       return true;
     }
-
 
 
 

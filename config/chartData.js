@@ -11,7 +11,7 @@ const getDailyDataArray = async () => {
   const dailyOrders = await Order.aggregate([
     {
       $match: {
-        "items.paymentStatus": "success" ,
+        "items.status": "Delivered" ,
         orderDate: { $gte: sevenDaysAgo, $lte: currentDate },
       },
     },
@@ -61,7 +61,7 @@ const getMonthlyDataArray = async () => {
   const monthlyOrders = await Order.aggregate([
     {
       $match: {
-        "items.paymentStatus": "success" ,
+        "items.status": "Delivered" ,
         orderDate: { $gte: sevenMonthsAgo, $lte: currentDate },
       },
     },
@@ -114,7 +114,7 @@ const getYearlyDataArray = async () => {
   const yearlyOrders = await Order.aggregate([
     {
       $match: {
-        "items.paymentStatus": "success" ,
+        "items.status": "Delivered" ,
         orderDate: { $gte: sevenYearsAgo, $lte: currentDate },
       },
     },

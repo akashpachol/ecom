@@ -39,6 +39,13 @@ app.use((req,res,next)=>{
 app.use("/", userRoute);
 app.use("/admin", adminRoute);
 
+app.use((req, res, next) => {
+  res.status(404).render("./layout/404Error", { userData: null });
+  next()
+});
+
+
+
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
