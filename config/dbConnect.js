@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
   const dbConnection=()=>{
       try{
-        const connect= mongoose.connect(`mongodb+srv://${process.env.MONGOUSER}:${process.env.MONGOPASS}@cluster0.mdr1sg8.mongodb.net/hookah`, {
+        const connect= mongoose.connect(`${process.env.MONGODB}`, {
               useNewUrlParser: true,
               useUnifiedTopology: true,
             })
