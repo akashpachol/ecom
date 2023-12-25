@@ -47,19 +47,6 @@ productTotals.push(total);
   
   
   
-  function calculateDiscountPrice(originalPrice, discountType, discountValue) {
-    if (discountType === 'fixed Amount') {
-  
-      return originalPrice - discountValue;
-    } else if (discountType === 'percentage') {
-  
-      const discountAmount = (originalPrice * discountValue) / 100;
-      return originalPrice - discountAmount;
-    } else {
-  
-      throw new Error('Invalid discount type');
-    }
-  };
   module.exports = {
     calculateDiscountedTotal,
     calculateSubtotal,

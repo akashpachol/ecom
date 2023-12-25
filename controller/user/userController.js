@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const User = require("../../model/userModel");
 const Product = require("../../model/productModel");
 const message = require("../../config/mailer");
@@ -40,10 +40,12 @@ const insertUser = async (req, res) => {
     }
     req.session.referralCode = req.body.referralCode || null;
     const referralCode = req.session.referralCode;
+    console.log(referralCode,"referralCode");
     const existMail = await User.findOne({ email: email });
     // const existnumber = await User.findOne({ email: email });
     if (referralCode) {
-      referrer = await User.findOne({ referralCode });
+      referrer = await User.findOne({ referralCode:referralCode });
+      console.log(referrer,"referrer");
 
       if (!referrer) {
         res.render("user/register", { message: "Invalid referral code." });
@@ -307,9 +309,7 @@ const loadWallets = async (req, res) => {
     }
 
     const walletData = await Wallet.findOne({ user: userId });
-    const {transaction,walletBalance} = walletData
-    console.log(walletData, "transaction");
-    // console.log(transaction, "transaction"+walletBalance);
+
     if (!walletData) {
    
       return res.render("user/wallets", { userData, wallet: null });

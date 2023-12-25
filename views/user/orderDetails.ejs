@@ -73,7 +73,7 @@
 
                                     <tbody>
                                         <% let subtotal=0; order.items.forEach(function(item) { 
-                                            let total=item.product.discountPrice?item.product.discountPrice * item.quantity:item.product.price * item.quantity;
+                                            let total=item.price * item.quantity;
                                             subtotal =order.totalAmount; %>
                                             <tr>
                                                 <td>

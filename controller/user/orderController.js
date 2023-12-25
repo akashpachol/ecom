@@ -96,7 +96,7 @@ const razorpayOrder = async (req, res) => {
       } else {
         return acc + (item.product.price * item.quantity || 0);
       }
-    }, 0);
+    }, 0); 
 
 
     if (couponCode) {
@@ -378,20 +378,19 @@ const orderCancel = async (req, res) => {
       ) {
         const walletData = await Wallet.findOne({ user: user_id });
         if (walletData) {
-
-          walletData.walletBalance +=(product.price * product.quantity)- (product.price * product.quantity)*(couponData.discount)/100;
+          walletData.walletBalance +=(product.price * product.quantity)- (product.price * product.quantity)*(couponData?.discount?couponData.discount:0)/100;
        
           walletData.transaction.push({
             type: "credit",
-            amount:(product.price * product.quantity)- (product.price * product.quantity)*(couponData.discount)/100,
+            amount:(product.price * product.quantity)- (product.price * product.quantity)*(couponData?.discount?couponData.discount:0)/100,
           });
         
           await walletData.save(); 
         }else{
           const wallet = new Wallet({
             user: user_id,
-            transaction:[{type:"credit",amount: (product.price * product.quantity)- (product.price * product.quantity)*(couponData.discount)/100}],
-            walletBalance:  (product.price * product.quantity)- (product.price * product.quantity)*(couponData.discount)/100
+            transaction:[{type:"credit",amount: (product.price * product.quantity)- (product.price * product.quantity)*(couponData?.discount?couponData.discount:0)/100}],
+            walletBalance:  (product.price * product.quantity)- (product.price * product.quantity)*(couponData?.discount?couponData.discount:0)/100
         });
   
         await wallet.save();
@@ -405,7 +404,7 @@ const orderCancel = async (req, res) => {
       }
       product.status = "Cancelled";
       product.reason = reason;
-      totalAmount =totalAmount- ((product.price * product.quantity)- (product.price * product.quantity)*(couponData.discount)/100);
+      totalAmount =totalAmount- ((product.price * product.quantity)- (product.price * product.quantity)*(couponData?.discount?couponData.discount:0)/100);
     }
 
     const updateData = await Order.findByIdAndUpdate(
